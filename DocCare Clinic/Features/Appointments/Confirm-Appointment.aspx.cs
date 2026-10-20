@@ -51,6 +51,7 @@ namespace DocCare_Clinic
                 {
                     LoadDoctorDetails(doctorId);
                     ShowSlotAvailability(doctorId);
+                    PreselectFromLink();
                 }
             }
 
@@ -294,6 +295,26 @@ namespace DocCare_Clinic
                 lblSlotStatus.Text = "This doctor has no free appointments in the next " + SlotService.BookingWindowDays + " days.";
                 lblSlotStatus.CssClass = "slot-status slot-none";
             }
+        }
+
+        // "Book follow-up" links (My Appointments, reminder email): ?date= opens that day if it can be booked,
+        // ?patientId= selects that family member (only one of this account's own patients)
+        void PreselectFromLink()
+        {
+            DateTime day;
+            if (TryParseDate(Request.QueryString["date"], out day) && day >= DateTime.Today && day <= DateTime.Today.AddDays(SlotService.BookingWindowDays))
+            {
+                txtAppointmentDate.Text = day.ToString("yyyy-MM-dd");
+                hdnSlotAvailable.Value = "1";   // the times for that day are loaded by the page script
+                lblSlotStatus.Text = "Follow-up advised for " + SlotService.FormatDate(day) + ". Choose a time below.";
+                lblSlotStatus.CssClass = "slot-status slot-ok";
+            }
+
+            int patient;
+            if (int.TryParse(Request.QueryString["patientId"], out patient) && IsOwnPatient(patient))
+                ClientScript.RegisterStartupScript(GetType(), "preselectPatient",
+                    "document.addEventListener('DOMContentLoaded', function () { var rb = document.getElementById('rbPatient" + patient + "');" +
+                    " if (rb) { rb.checked = true; selectPatient('" + patient + "'); } });", true);
         }
 
         static bool TryParseDate(string value, out DateTime date)

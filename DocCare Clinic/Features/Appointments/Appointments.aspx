@@ -100,7 +100,10 @@
                      color: #2E37A4 !important; font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; }
         .date-chip:hover { border-color: #2E37A4; }
         .date-chip.active { background: #2E37A4; border-color: #2E37A4; color: #fff !important; }
-        .showing-label { margin-left: auto; font-size: 13px; color: #6b7280; }        @media (max-width: 767px) { .showing-label { margin-left: 0; width: 100%; } }
+        .showing-label { margin-left: auto; font-size: 13px; color: #6b7280; }
+        .notes-link { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 8px; border: 1.5px solid #c7d2fe;
+                      background: #eef2ff; color: #2E37A4 !important; font-size: 12.5px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+        .notes-link:hover { border-color: #2E37A4; }        @media (max-width: 767px) { .showing-label { margin-left: 0; width: 100%; } }
 
         .status-dropdown
         {
@@ -237,6 +240,9 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Actions">
                                                     <ItemTemplate>
+                                                        <%-- Visit notes / vitals for a visit that happened or is happening (see MedicalRecords) --%>
+                                                        <asp:HyperLink ID="lnkNotes" runat="server" CssClass="notes-link" Visible="false"
+                                                            NavigateUrl='<%# "~/Features/Patients/VisitNotes.aspx?AppointmentID=" + Eval("ID") %>' />
                                                         <asp:Button ID="btnDelete" runat="server" CssClass="custom-icon-delete" CommandArgument='<%# Eval("ID") %>'
                                                             CommandName="DeleteAppointment" OnClientClick="return confirm('Remove this appointment from the list? It will stay in the Appointment Report.');" ToolTip="Remove from list (kept in Appointment Report)" />
                                                     </ItemTemplate>

@@ -14,6 +14,16 @@ namespace DocCare_Clinic
 {
     public partial class Login : System.Web.UI.Page
     {
+        // After login: back to the page that sent the user here (only a page of this site, e.g. a link
+        // in a reminder email), otherwise the role's home page
+        string AfterLogin(string home)
+        {
+            string back = Request.QueryString["ReturnUrl"];
+            bool local = !string.IsNullOrEmpty(back) && back.StartsWith("/") && !back.StartsWith("//") && !back.StartsWith("/\\")
+                         && back.IndexOf("Login.aspx", StringComparison.OrdinalIgnoreCase) < 0;
+            return local ? back : ResolveUrl(home);
+        }
+
         // ─── Connection string from Web.config ────────────────────────────────────
         string connectionString = ConfigurationManager.ConnectionStrings["DocCareDB"].ConnectionString;
 
@@ -60,7 +70,7 @@ namespace DocCare_Clinic
                     Session["UserRole"] = "SuperAdmin";
                     Session["UserName"] = GetAdminName(email);   // ← uses SP
                     HandleRememberMe(email);
-                    Response.Redirect(ResolveUrl("~/Features/Admin/AdminDashBoard.aspx"));
+                    Response.Redirect(AfterLogin("~/Features/Admin/AdminDashBoard.aspx"));
                 }
 
                 // ── Doctor ─────────────────────────────────────────────────────────
@@ -73,7 +83,7 @@ namespace DocCare_Clinic
                     Session["DoctorName"] = doctorName;
                     Session["UserRole"]   = "Doctor";
                     HandleRememberMe(email);
-                    Response.Redirect(ResolveUrl("~/Features/Doctors/DoctorDashBoard.aspx"));
+                    Response.Redirect(AfterLogin("~/Features/Doctors/DoctorDashBoard.aspx"));
                 }
 
                 // ── Receptionist ───────────────────────────────────────────────────
@@ -86,7 +96,7 @@ namespace DocCare_Clinic
                     Session["ReceptionistName"] = receptionistName;
                     Session["UserRole"]         = "Receptionist";
                     HandleRememberMe(email);
-                    Response.Redirect(ResolveUrl("~/Features/Receptionists/ReceptionistDashboard.aspx"));
+                    Response.Redirect(AfterLogin("~/Features/Receptionists/ReceptionistDashboard.aspx"));
                 }
 
                 // ── Patient / User ─────────────────────────────────────────────────
@@ -99,7 +109,7 @@ namespace DocCare_Clinic
                     Session["Name"]     = patientName;
                     Session["UserRole"] = "User";
                     HandleRememberMe(email);
-                    Response.Redirect(ResolveUrl("~/Features/Site/Default.aspx"));
+                    Response.Redirect(AfterLogin("~/Features/Site/Default.aspx"));
                 }
             }
             else

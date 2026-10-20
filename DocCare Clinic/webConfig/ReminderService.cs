@@ -69,7 +69,24 @@ namespace DocCare_Clinic.Config
             return ids;
         }
 
-        /// <summary>Sends the reminders due now; returns how many were sent.</summary>
+        // Follow-up reminders go out this many days before the follow-up date the doctor advised
+        public const int FollowUpReminderDaysBefore = 2;
+
+        /// <summary>
+        /// Visits whose follow-up is due within FollowUpReminderDaysBefore days (not yet passed), still open
+        /// (not booked, not closed), not reminded yet, and with an email address.
+        /// </summary>
+        public static List<int> FollowUpsDue(DateTime now)
+        {
+            List<int> ids = new List<int>();
+            if (now.Hour < ReminderHour) return ids;
+            foreach (System.Data.DataRow r in MedicalRecords.OpenFollowUps(dueBy: now.Date.AddDays(FollowUpReminderDaysBefore)).Rows)
+                if (Convert.ToDateTime(r["FollowUpDate"]).Date >= now.Date && r["FollowUpReminderSentAt"] == DBNull.Value && r["Email"].ToString().Trim() != "")
+                    ids.Add(Convert.ToInt32(r["AppointmentID"]));
+            return ids;
+        }
+
+        /// <summary>Sends the reminders due now (appointments tomorrow, follow-ups due soon); returns how many were sent.</summary>
         public static int RunOnce(DateTime now)
         {
             int sent = 0;
@@ -79,6 +96,13 @@ namespace DocCare_Clinic.Config
                 bool noEmail;
                 if (AppointmentNotifier.Send(id, AppointmentNotifier.EmailKind.Reminder, false, out message, out noEmail)) sent++;
                 else if (!noEmail) Log("Appointment " + id + " reminder email not sent: " + message);
+            }
+            foreach (int id in FollowUpsDue(now))
+            {
+                string message;
+                bool noEmail;
+                if (AppointmentNotifier.SendFollowUpReminder(id, out message, out noEmail)) sent++;
+                else if (!noEmail) Log("Visit " + id + " follow-up reminder not sent: " + message);
             }
             return sent;
         }

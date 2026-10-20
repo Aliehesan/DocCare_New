@@ -25,6 +25,9 @@
         var page = Context.Handler as System.Web.UI.Page;
         if (page == null) return;
 
+        // Links in reminder emails need the site's address (webConfig/SiteAddress.cs)
+        DocCare_Clinic.Config.SiteAddress.Remember(Request);
+
         if (!IsAllowed(page)) return;
 
         page.PreRender += (s, args) =>
@@ -80,6 +83,11 @@
         { "~/Features/Patients/AddPatient.aspx", AllStaff },
         { "~/Features/Patients/EditPatient.aspx", AllStaff },
         { "~/Features/Patients/PatientProfile.aspx", AllStaff },
+        // Medical record of one visit: what each role may see or change is decided in MedicalRecords
+        { "~/Features/Patients/VisitNotes.aspx", AllStaff },
+        { "~/Features/Patients/Prescription.aspx", new[] { Admin, Doctor } },
+        // Follow-ups to call about: date, doctor and patient only (doctors see their own patients)
+        { "~/Features/Appointments/FollowUps.aspx", AllStaff },
         { "~/Features/Doctors/Doctors.aspx", AllStaff },
         { "~/Features/Doctors/DoctorProfile.aspx", AllStaff },
         { "~/Features/Doctors/DoctorsAppoinment.aspx", AllStaff },
@@ -121,8 +129,11 @@
         string role = Context.Session != null ? Context.Session["UserRole"] as string : null;
         if (role != null && Array.IndexOf(roles, role) >= 0) return true;
 
-        // Not logged in -> login page; logged in with the wrong role -> that role's home page
-        Response.Redirect(page.ResolveUrl(HomeFor(role)), false);
+        // Not logged in -> login page (and back here afterwards, e.g. from a link in an email);
+        // logged in with the wrong role -> that role's home page
+        string target = page.ResolveUrl(HomeFor(role));
+        if (role == null) target += "?ReturnUrl=" + HttpUtility.UrlEncode(Request.RawUrl);
+        Response.Redirect(target, false);
         Context.ApplicationInstance.CompleteRequest();
         return false;
     }

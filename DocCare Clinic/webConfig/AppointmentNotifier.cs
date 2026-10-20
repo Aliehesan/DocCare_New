@@ -166,5 +166,47 @@ namespace DocCare_Clinic.Config
                 return true;
             }
         }
+
+        /// <summary>
+        /// "Your follow-up is due" for the visit appointmentId (ReminderService), once: stamps
+        /// VisitNotes.FollowUpReminderSentAt. Does nothing when the follow-up is no longer open.
+        /// </summary>
+        internal static bool SendFollowUpReminder(int appointmentId, out string message, out bool noEmail)
+        {
+            noEmail = false;
+            System.Data.DataTable dt = MedicalRecords.OpenFollowUps(appointmentId: appointmentId);
+            if (dt.Rows.Count == 0) { message = "The follow-up is no longer open."; return false; }
+            System.Data.DataRow r = dt.Rows[0];
+            string email = r["Email"].ToString().Trim();
+            if (email == "")
+            {
+                noEmail = true;
+                message = "There is no email address for " + r["PatientName"] + ".";
+                return false;
+            }
+
+            DateTime followUp = Convert.ToDateTime(r["FollowUpDate"]);
+            string doctor = DoctorName.WithoutTitle(r["Doctor"].ToString());
+            string bookUrl = SiteAddress.Absolute(MedicalRecords.FollowUpBookingPath(Convert.ToInt32(r["DoctorID"]), followUp, Convert.ToInt32(r["PatientID"])));
+            string body = EmailService.BuildFollowUpEmail(r["PatientName"].ToString(), r["PatientCode"].ToString(), doctor,
+                                                          r["Specialization"].ToString(), followUp, Convert.ToDateTime(r["VisitDate"]), bookUrl);
+            string result = new EmailService().SendEmail(email, "Your follow-up with Dr. " + doctor + " is due - " + followUp.ToString("dd MMM yyyy"), body);
+            if (result != "1")
+            {
+                message = "The email to " + email + " could not be sent. " + result;
+                return false;
+            }
+
+            string cs = ConfigurationManager.ConnectionStrings["DocCareDB"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(cs))
+            using (SqlCommand cmd = new SqlCommand("UPDATE VisitNotes SET FollowUpReminderSentAt = GETDATE() WHERE AppointmentID = @ID", con))
+            {
+                cmd.Parameters.AddWithValue("@ID", appointmentId);
+                con.Open();
+                cmd.ExecuteNonQuery();
+            }
+            message = "Follow-up reminder was sent to " + email + ".";
+            return true;
+        }
     }
 }

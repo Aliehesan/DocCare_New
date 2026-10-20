@@ -374,6 +374,91 @@ namespace TaskManagement.config
         }
 
         /// <summary>
+        /// "Your follow-up is due": sent a couple of days before the follow-up date the doctor advised
+        /// (ReminderService). bookUrl opens online booking with the doctor, date and patient chosen;
+        /// without it the patient is asked to book on the website or call.
+        /// </summary>
+        public static string BuildFollowUpEmail(string patientName, string patientCode, string doctorName, string specialization,
+                                                DateTime followUpDate, DateTime lastVisit, string bookUrl)
+        {
+            Func<string, string> enc = HttpUtility.HtmlEncode;
+            string row = "<tr{0}><td style='width:40%;color:#666;'>{1}</td><td><strong>{2}</strong></td></tr>";
+            string shade = " style='background:#e0f5f5;'";
+            string details =
+                string.Format(row, "", "👤 Patient", enc(patientName) + (string.IsNullOrEmpty(patientCode) ? "" : " &nbsp;<span style=\"color:#6b7280;\">(Patient ID " + enc(patientCode) + ")</span>")) +
+                string.Format(row, shade, "👨‍⚕️ Doctor", "Dr. " + enc(doctorName)) +
+                string.Format(row, "", "🩺 Specialization", enc(specialization)) +
+                string.Format(row, shade, "📅 Follow-up advised for", followUpDate.ToString("dddd, dd MMM yyyy")) +
+                string.Format(row, "", "🗓️ Last visit", lastVisit.ToString("dd MMM yyyy"));
+            string action = string.IsNullOrEmpty(bookUrl)
+                ? "<p style='color:#444;font-size:14px;margin:0 0 20px;'>Please book your follow-up on the DocCare website (My Appointments) or call the clinic reception.</p>"
+                : "<p style='text-align:center;margin:0 0 24px;'><a href='" + enc(bookUrl) + "' style='display:inline-block;background:#2E37A4;color:#ffffff;" +
+                  "text-decoration:none;font-weight:bold;font-size:15px;padding:13px 30px;border-radius:8px;'>Book your follow-up</a></p>";
+
+            return @"
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='UTF-8'/>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+</head>
+<body style='margin:0;padding:0;background-color:#f4f7f9;font-family:Arial,sans-serif;'>
+  <table width='100%' cellpadding='0' cellspacing='0' style='background:#f4f7f9;padding:30px 0;'>
+    <tr>
+      <td align='center'>
+        <table width='600' cellpadding='0' cellspacing='0' style='background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);'>
+          <tr>
+            <td style='background:linear-gradient(135deg,#00c7c7,#0099a8);padding:35px 40px;text-align:center;'>
+              <h1 style='color:#ffffff;margin:0;font-size:28px;letter-spacing:1px;'>🏥 DocCare Clinic</h1>
+              <p style='color:#e0f9f9;margin:6px 0 0;font-size:14px;'>Your Health, Our Priority</p>
+            </td>
+          </tr>
+          <tr>
+            <td style='background:#eef2ff;padding:20px 40px;text-align:center;border-bottom:2px solid #2E37A4;'>
+              <h2 style='color:#2E37A4;margin:0;font-size:20px;'>Your Follow-up Visit Is Due 🩺</h2>
+            </td>
+          </tr>
+          <tr>
+            <td style='padding:35px 40px;'>
+              <p style='color:#444;font-size:15px;margin:0 0 20px;'>
+                Dear <strong>" + enc(patientName) + @"</strong>,<br/><br/>
+                At your last visit, <strong>Dr. " + enc(doctorName) + @"</strong> asked to see you again around
+                <strong>" + followUpDate.ToString("dddd, dd MMM yyyy") + @"</strong>. You have not booked it yet.
+              </p>
+              <table width='100%' cellpadding='0' cellspacing='0'
+                     style='background:#f0fafa;border:1px solid #b2e8e8;border-radius:10px;margin:0 0 25px;'>
+                <tr>
+                  <td style='padding:20px 25px;'>
+                    <p style='margin:0 0 8px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;'>Follow-up</p>
+                    <table width='100%' cellpadding='6' cellspacing='0' style='font-size:14px;color:#333;'>" + details + @"
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              " + action + @"
+              <p style='color:#0b6b74;background:#e8fafa;border-left:4px solid #00c7c7;font-size:13px;padding:12px 16px;border-radius:8px;margin:0;'>
+                🩺 Please bring your prescription from the last visit. If you no longer need this follow-up, you can ignore this email.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style='background:#f0fafa;padding:20px 40px;text-align:center;border-top:1px solid #e0e0e0;'>
+              <p style='color:#aaa;font-size:12px;margin:0;'>
+                This message was sent by the <strong>DocCare Clinic</strong> reception desk.<br/>
+                Please do not reply to this email.<br/><br/>
+                &copy; " + DateTime.Now.Year.ToString() + @" DocCare Clinic. All rights reserved.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>";
+        }
+
+        /// <summary>
         /// Generates a Welcome / Credentials email for a new Receptionist.
         /// </summary>
         public static string BuildReceptionistWelcomeEmail(string receptionistName, string email,

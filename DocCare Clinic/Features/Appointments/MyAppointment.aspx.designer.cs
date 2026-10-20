@@ -50,6 +50,8 @@ namespace DocCare_Clinic {
 
         protected global::System.Web.UI.WebControls.Panel pnlList;
 
+        protected global::System.Web.UI.WebControls.Repeater rptFollowUps;
+
         protected global::System.Web.UI.WebControls.LinkButton tabUpcoming;
 
         protected global::System.Web.UI.WebControls.LinkButton tabPast;

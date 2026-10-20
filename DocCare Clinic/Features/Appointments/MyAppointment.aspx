@@ -220,6 +220,20 @@
             }
         }
 
+        /* Follow-ups advised by the doctor */
+        .followup-box { background: #fff; border: 1px solid #c7d2fe; border-left: 4px solid #2E37A4; border-radius: 16px; padding: 16px 20px; margin: 0 0 22px;
+                        box-shadow: 0 4px 16px rgba(46, 55, 164, 0.06); }
+        .followup-title { font-size: 15px; font-weight: 700; color: #2E37A4; margin-bottom: 6px; }
+        .followup-item { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid #f1f2f6; }
+        .followup-item:first-of-type { border-top: 0; }
+        .followup-spec { font-size: 12px; color: #6b7280; margin-left: 6px; }
+        .followup-meta { font-size: 13.5px; color: #4b5563; margin-top: 2px; }
+        .followup-overdue { color: #b45309; font-weight: 600; }
+        .followup-book { display: inline-block; background: #2E37A4; color: #fff !important; padding: 9px 20px; border-radius: 50px; font-size: 13px;
+                         font-weight: 600; text-decoration: none; white-space: nowrap; }
+        .followup-book:hover { background: #232b85; }
+        .followup-later { font-size: 13px; color: #6b7280; }
+
         /* Tabs: Upcoming / Past / Cancelled */
         .appt-tabs {
             display: flex;
@@ -375,6 +389,22 @@
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <div class="appointments-page-wrapper">
+                <%-- Follow-ups the doctor advised and the patient has not booked yet --%>
+                <asp:Repeater ID="rptFollowUps" runat="server">
+                    <HeaderTemplate><div class="followup-box"><div class="followup-title"><i class="fa-solid fa-stethoscope"></i> Follow-up advised</div></HeaderTemplate>
+                    <ItemTemplate>
+                        <div class="followup-item">
+                            <div>
+                                <strong>Dr. <%# HttpUtility.HtmlEncode(DocCare_Clinic.Config.DoctorName.WithoutTitle(Eval("Doctor").ToString())) %></strong>
+                                <span class="followup-spec"><%# HttpUtility.HtmlEncode(Eval("Specialization")) %></span>
+                                <div class="followup-meta">For <strong><%# HttpUtility.HtmlEncode(Eval("PatientName")) %></strong> &middot; <%# FollowUpWhen(Container.DataItem) %></div>
+                            </div>
+                            <%# FollowUpAction(Container.DataItem) %>
+                        </div>
+                    </ItemTemplate>
+                    <FooterTemplate></div></FooterTemplate>
+                </asp:Repeater>
+
                 <asp:Panel ID="pnlList" runat="server">
                 <%-- Upcoming (soonest first) / Past / Cancelled, with counts --%>
                 <div class="appt-tabs" role="tablist">

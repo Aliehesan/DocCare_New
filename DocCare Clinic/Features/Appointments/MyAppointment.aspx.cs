@@ -78,8 +78,38 @@ namespace DocCare_Clinic
             return "past";
         }
 
+        // ── Follow-ups the doctor advised, not booked yet ──
+
+        void BindFollowUps(int userID)
+        {
+            DataTable dt = MedicalRecords.OpenFollowUps(userId: userID);
+            rptFollowUps.DataSource = dt;
+            rptFollowUps.DataBind();
+            rptFollowUps.Visible = dt.Rows.Count > 0;
+        }
+
+        protected string FollowUpWhen(object item)
+        {
+            DateTime d = Convert.ToDateTime(((DataRowView)item)["FollowUpDate"]).Date;
+            if (d < DateTime.Today) return "<span class=\"followup-overdue\">was due on " + SlotService.FormatDate(d) + "</span>";
+            return "around " + SlotService.FormatDate(d) + (d == DateTime.Today ? " (today)" : "");
+        }
+
+        // Book now (with doctor, date and patient chosen), or when booking opens for a far-away date
+        protected string FollowUpAction(object item)
+        {
+            DataRowView r = (DataRowView)item;
+            DateTime d = Convert.ToDateTime(r["FollowUpDate"]).Date;
+            DateTime opens = d.AddDays(-SlotService.BookingWindowDays);
+            if (opens > DateTime.Today)
+                return "<span class=\"followup-later\">Booking opens on " + SlotService.FormatDate(opens) + "</span>";
+            string url = ResolveUrl(MedicalRecords.FollowUpBookingPath(Convert.ToInt32(r["DoctorID"]), d, Convert.ToInt32(r["PatientID"])));
+            return "<a class=\"followup-book\" href=\"" + HttpUtility.HtmlAttributeEncode(url) + "\"><i class=\"fa-regular fa-calendar-plus\"></i>&nbsp; Book follow-up</a>";
+        }
+
         private void BindAppointments(int userID)
         {
+            BindFollowUps(userID);
             string query = @"
                 SELECT 
                     A.ID AS AppointmentID, 

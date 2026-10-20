@@ -250,7 +250,7 @@ namespace DocCare_Clinic
                         cmd.Parameters.AddWithValue("@DoctorID", userRole == "Doctor" ? Session["DoctorID"] : DBNull.Value);
                         con.Open();
                         bool removed = cmd.ExecuteNonQuery() > 0;
-                        ClientScript.RegisterStartupScript(this.GetType(), "removeAppt", removed
+                        ScriptManager.RegisterStartupScript(this, GetType(), "removeAppt", removed
                             ? "swalAlert('success', 'Removed from List', 'The appointment is hidden from this list. It is still in the Appointment Report.');"
                             : "swalAlert('warning', 'Not Removed', 'Only completed or cancelled appointments can be removed. Cancel the appointment first.');", true);
                     }
@@ -292,6 +292,16 @@ namespace DocCare_Clinic
                 string rowStatus = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
                 if (btnDelete != null)
                     btnDelete.Visible = AppointmentStatus.IsFinal(rowStatus);
+
+                // Visit notes: doctors write them, reception takes vitals, the admin reads
+                HyperLink lnkNotes = (HyperLink)e.Row.FindControl("lnkNotes");
+                string role = Session["UserRole"] as string;
+                if (lnkNotes != null && MedicalRecords.IsVisit(rowStatus, Convert.ToDateTime(DataBinder.Eval(e.Row.DataItem, "AppointDate"))))
+                {
+                    lnkNotes.Visible = true;
+                    lnkNotes.Text = role == "Receptionist" ? "<i class=\"fa-solid fa-heart-pulse\"></i> Vitals" : "<i class=\"fa-regular fa-file-lines\"></i> Notes";
+                    lnkNotes.ToolTip = role == "Receptionist" ? "Record vitals" : role == "Doctor" ? "Write visit notes and prescription" : "View visit notes";
+                }
             }
 
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -335,9 +345,16 @@ namespace DocCare_Clinic
                 // Checked on the server against the current status (forward-only, Completed/Cancelled final)
                 string message;
                 bool changed = AppointmentStatus.TryChange(appointmentID, newStatus, userRole, null, out message);
-                ClientScript.RegisterStartupScript(this.GetType(), "statusChange",
-                    "swalAlert('" + (changed ? "success" : "warning") + "', '" + (changed ? "Status Updated" : "Not Changed") + "', '" +
-                    HttpUtility.JavaScriptStringEncode(message) + "');", true);
+                string script = "swalAlert('" + (changed ? "success" : "warning") + "', '" + (changed ? "Status Updated" : "Not Changed") + "', '" +
+                                HttpUtility.JavaScriptStringEncode(message) + "');";
+                // A doctor who has just seen the patient: offer the visit notes straight away
+                if (changed && newStatus == AppointmentStatus.Completed && userRole == "Doctor")
+                    script = "Swal.fire({ icon: 'success', title: 'Visit Completed', text: 'Write the visit notes and prescription now?', showCancelButton: true," +
+                             " confirmButtonText: 'Write Notes', cancelButtonText: 'Later', confirmButtonColor: '#2E37A4', cancelButtonColor: '#6b7280' })" +
+                             ".then(function (r) { if (r.isConfirmed) window.location.href = '" +
+                             HttpUtility.JavaScriptStringEncode(ResolveUrl("~/Features/Patients/VisitNotes.aspx?AppointmentID=" + appointmentID)) + "'; });";
+                // ScriptManager: the list is in an UpdatePanel, where ClientScript scripts do not run
+                ScriptManager.RegisterStartupScript(this, GetType(), "statusChange", script, true);
 
                 BindAppointments();
             }

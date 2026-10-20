@@ -109,6 +109,54 @@ namespace DocCare_Clinic {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvMedicalHistory;
+        protected global::System.Web.UI.WebControls.Panel pnlAllergyBanner;
+
+        protected global::System.Web.UI.WebControls.Literal litAllergyBanner;
+
+        protected global::System.Web.UI.WebControls.LinkButton lnkEditHealth;
+
+        protected global::System.Web.UI.WebControls.Panel pnlHealthView;
+
+        protected global::System.Web.UI.WebControls.Literal litBloodGroup;
+
+        protected global::System.Web.UI.WebControls.Literal litAllergiesFact;
+
+        protected global::System.Web.UI.WebControls.Literal litConditions;
+
+        protected global::System.Web.UI.WebControls.Literal litMedicines;
+
+        protected global::System.Web.UI.WebControls.Literal litSurgeries;
+
+        protected global::System.Web.UI.WebControls.Literal litHealthUpdated;
+
+        protected global::System.Web.UI.WebControls.Panel pnlHealthEdit;
+
+        protected global::System.Web.UI.WebControls.DropDownList ddlBloodGroup;
+
+        protected global::System.Web.UI.WebControls.TextBox txtAllergies;
+
+        protected global::System.Web.UI.WebControls.TextBox txtConditions;
+
+        protected global::System.Web.UI.WebControls.TextBox txtMedicines;
+
+        protected global::System.Web.UI.WebControls.TextBox txtSurgeries;
+
+        protected global::System.Web.UI.WebControls.Button btnCancelHealth;
+
+        protected global::System.Web.UI.WebControls.Button btnSaveHealth;
+
+        protected global::System.Web.UI.WebControls.Literal litNextAppt;
+
+        protected global::System.Web.UI.WebControls.Repeater rptVisits;
+
+        protected global::System.Web.UI.WebControls.Panel pnlNoVisits;
+
+        protected global::System.Web.UI.WebControls.Panel pnlVisitPager;
+
+        protected global::System.Web.UI.WebControls.Literal litVisitPager;
+
+        protected global::System.Web.UI.WebControls.LinkButton lnkVisitPrev;
+
+        protected global::System.Web.UI.WebControls.LinkButton lnkVisitNext;
     }
 }
