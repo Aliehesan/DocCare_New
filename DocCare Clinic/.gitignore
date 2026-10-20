@@ -1,0 +1,17 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Ignore database files
+App_Data/*.mdf
+App_Data/*.ldf
+
+# Ignore Visual Studio files
+bin/
+obj/
+.vs/
+
+# Ignore user-specific files
+*.suo
+*.user

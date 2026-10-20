@@ -1,0 +1,26 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Passwords and keys (copy DocCare Clinic/Secrets.example.config to Secrets.config)
+Secrets.config
+
+# Build and Visual Studio
+bin/
+obj/
+.vs/
+*.suo
+*.user
+
+# Database files (contain patient data)
+*.mdf
+*.ldf
+*.bak
+
+# Error log (patient names and emails)
+Logs/
+
+# Local helper scripts (some contain real login passwords)
+/*.ps1
+/git

@@ -1,0 +1,46 @@
+/* DocCare additions on top of the theme (style.css). Loaded by the Admin, Receptionist and Doctor masters. */
+
+/* Coloured status dropdowns (Active/Inactive, appointment status):
+   the closed box keeps its status colour, but the opened list must not inherit it.
+   Otherwise every option shows the current status colour (e.g. Active and Inactive both green). */
+select option {
+    background-color: #ffffff;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+select option[value="Active"],
+select option[value="Completed"] {
+    color: #047857;
+}
+
+select option[value="Inactive"],
+select option[value="Cancelled"] {
+    color: #b91c1c;
+}
+
+select option[value="Confirmed"] {
+    color: #1d4ed8;
+}
+
+select option[value="Pending"] {
+    color: #4b5563;
+}
+
+select option[value="No Show"] {
+    color: #6b7280;
+}
+
+/* Choices this user cannot pick (e.g. a status that may not be set from here) */
+select option:disabled {
+    color: #9ca3af;
+}
+
+/* Permanent Patient ID (e.g. DC-00029) shown under a patient name in staff lists */
+.patient-code {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #6b7280;
+    letter-spacing: .3px;
+}

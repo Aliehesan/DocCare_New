@@ -1,0 +1,353 @@
+    <%@ Master Language="C#" AutoEventWireup="true" CodeBehind="DocCare.Master.cs" Inherits="DocCare_Clinic.DocCare" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <base href="<%= ResolveUrl("~/") %>" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocCare - Your Health, Our Priority</title>
+    
+    <!-- External Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- Existing Vendor CSS (Keep for Bootstrap/Grid compatibility in inner pages) -->
+    <link rel="stylesheet" href="~/assets_web/css/vendor.css" />
+    <link rel="stylesheet" href="~/assets_web/css/responsive.css" />
+    
+    <!-- Custom Modern UI Styles -->
+    <style>
+        :root {
+            --primary: #2E37A4;
+            --primary-hover: #1e2578;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif !important;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* ── Navbar ── */
+        .modern-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background-color: var(--white);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .modern-navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none !important;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .modern-navbar .logo img {
+            width: 35px;
+            height: 35px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            text-decoration: none !important;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .btn-modern {
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 15px;
+            text-decoration: none !important;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary-teal {
+            background: var(--primary);
+            color: var(--white);
+            border: 2px solid var(--primary);
+            box-shadow: 0 4px 15px rgba(46, 55, 164, 0.3);
+        }
+
+        .btn-primary-teal:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+            box-shadow: 0 6px 20px rgba(46, 55, 164, 0.4);
+            color: white;
+        }
+
+        /* Dropdown */
+        .user-dropdown-container {
+            position: relative;
+            display: inline-block;
+            /* Creates an invisible hover bridge so the menu doesn't close */
+            padding-bottom: 20px; 
+            margin-bottom: -20px;
+        }
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: var(--white);
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            z-index: 1001;
+            overflow: hidden;
+        }
+        .user-dropdown-menu a {
+            color: var(--text-dark);
+            padding: 12px 20px;
+            text-decoration: none !important;
+            display: block;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .user-dropdown-menu a:hover {
+            background-color: var(--bg-light);
+            color: var(--primary);
+        }
+        .user-dropdown-container:hover .user-dropdown-menu {
+            display: block;
+        }
+        .user-greeting {
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ── Footer ── */
+        .modern-footer {
+            background: var(--white);
+            padding: 40px 8%;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 14px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        /* ── Overrides for inner pages ── */
+        .breadcrumb-area {
+            background-image: none !important;
+            background-color: var(--white) !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border-radius: 0 0 30px 30px;
+            padding: 40px 0 !important;
+            margin-bottom: 40px !important;
+        }
+        .breadcrumb-area .page-title {
+            color: var(--text-dark) !important;
+            font-weight: 700;
+            font-size: 36px;
+        }
+
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        #loader.fade-out { opacity: 0; pointer-events: none; }
+        .loader-content img { width: 70px; animation: pulse 1.5s infinite; }
+        .loader-content p { color: var(--primary); font-weight: bold; margin-top: 10px; }
+
+        @media (max-width: 991px) {
+            .nav-links { display: none; }
+        }
+    </style>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <!-- SweetAlert2 + global helpers. Loaded in the page head so alerts registered from
+         code-behind (RegisterStartupScript, rendered inside the form) can call them. -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Toast notification (success / error / info / warning)
+        function swalToast(icon, title, timer) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: icon || 'success',
+                title: title,
+                showConfirmButton: false,
+                timer: timer || 3000,
+                timerProgressBar: true,
+                customClass: { popup: 'swal-modern-popup' }
+            });
+        }
+
+        // Confirm dialog - calls onConfirm() if user presses the confirm button
+        function swalConfirm(title, text, icon, confirmText, onConfirm) {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon || 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#2E37A4',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: confirmText || 'Yes, Proceed',
+                cancelButtonText: 'Cancel',
+                customClass: { popup: 'swal-modern-popup' }
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    onConfirm();
+                }
+            });
+            return false;
+        }
+
+        // Error / Info alert (no confirm needed)
+        function swalAlert(icon, title, text) {
+            Swal.fire({
+                icon: icon || 'error',
+                title: title,
+                text: text,
+                confirmButtonColor: '#2E37A4',
+                customClass: { popup: 'swal-modern-popup' }
+            });
+        }
+    </script>
+    <style>
+        .swal-modern-popup {
+            border-radius: 20px !important;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        
+        <!-- Preloader -->
+        <div id="loader">
+            <div class="loader-content">
+                <img src="assets/img/logo.png" alt="Logo" />
+                <p>DocCare...</p>
+            </div>
+        </div>
+
+        <!-- ── Modern Navbar ── -->
+        <nav class="modern-navbar">
+            <a href="<%= ResolveUrl("~/Features/Site/Default.aspx") %>" class="logo">
+                <img src="assets/img/logo.png" alt="DocCare">
+                DocCare
+            </a>
+
+            <ul class="nav-links">
+                <li><a href="<%= ResolveUrl("~/Features/Site/Default.aspx") %>">Home</a></li>
+                <li><a href="<%= ResolveUrl("~/Features/Site/Service.aspx") %>">Services</a></li>
+                <li><a href="<%= ResolveUrl("~/Features/Doctors/Doctors-Team.aspx") %>">All Doctors</a></li>
+                <li><a href="<%= ResolveUrl("~/Features/Site/About.aspx") %>">About</a></li>
+                <li><a href="<%= ResolveUrl("~/Features/Site/Contact.aspx") %>">Contact</a></li>
+            </ul>
+
+            <div class="nav-buttons">
+                <% if (Session["Name"] != null) { 
+                    string fullName = Session["Name"].ToString();
+                    string firstName = fullName.Split(' ')[0];
+                %>
+                    <div class="user-dropdown-container">
+                        <div class="user-greeting">
+                            <i class="fa-regular fa-user-circle" style="font-size:20px;"></i> 
+                            <%= firstName %> <i class="fa-solid fa-chevron-down" style="font-size:12px;"></i>
+                        </div>
+                        <div class="user-dropdown-menu">
+                            <a href="Features/Accounts/UserProfile.aspx?PatientId=<%= Session["UserId"] %>"><i class="fa-regular fa-id-card"></i> My Profile</a>
+                            <a href="<%= ResolveUrl("~/Features/Appointments/MyAppointment.aspx") %>"><i class="fa-regular fa-calendar-check"></i> Appointments</a>
+                            <a href="<%= ResolveUrl("~/Features/Accounts/Logout.aspx") %>" style="color: #dc3545;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <a href="<%= ResolveUrl("~/Features/Accounts/Login.aspx") %>" class="btn-modern btn-outline">Login</a>
+                <% } %>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div style="min-height: 60vh;">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+
+        <!-- ── Modern Footer ── -->
+        <footer class="modern-footer">
+            <p>Copyright © <%= DateTime.Now.Year %> DocCare Clinic. All Rights Reserved.</p>
+        </footer>
+
+    </form>
+
+    <script>
+        // Smooth Loader Hide
+        window.addEventListener('load', function () {
+            var loader = document.getElementById("loader");
+            loader.classList.add("fade-out");
+            setTimeout(function () {
+                loader.style.display = "none";
+            }, 500);
+        });
+    </script>
+
+    <style>
+        .swal-modern-popup {
+            border-radius: 20px !important;
+            font-family: 'Poppins', sans-serif !important;
+        }
+    </style>
+</body>
+</html>

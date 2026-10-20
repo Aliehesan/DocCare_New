@@ -1,0 +1,1328 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D21A5350-EF07-4B85-B405-2104ADA57BA2}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DocCare_Clinic</RootNamespace>
+    <AssemblyName>DocCare Clinic</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
+    <Content Include="api\create-order.ashx" />
+    <Content Include="api\verify-payment.ashx" />
+    <Content Include="Features\Site\About.aspx" />
+    <Content Include="Features\Departments\AddDepartment.aspx" />
+    <Content Include="Features\Doctors\AddDoctor.aspx" />
+    <Content Include="Features\Patients\AddPatient.aspx" />
+    <Content Include="Features\Receptionists\AddReceptionist.aspx" />
+    <Content Include="Features\Appointments\AppointmentReport.aspx" />
+    <Content Include="Features\Appointments\Appointments.aspx" />
+    <Content Include="App_Data\DocCare.mdf" />
+    <Content Include="App_Data\DocCare_log.ldf">
+      <DependentUpon>DocCare.mdf</DependentUpon>
+    </Content>
+    <Content Include="assets\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="assets\css\bootstrap.min.css" />
+    <Content Include="assets\css\ckeditor.css" />
+    <Content Include="assets\css\dataTables.bootstrap4.min.css" />
+    <Content Include="assets\css\feather.css" />
+    <Content Include="assets\css\fullcalendar.min.css" />
+    <Content Include="assets\css\select2.min.css" />
+    <Content Include="assets\css\style.css" />
+    <Content Include="assets\css\doccare-custom.css" />
+    <Content Include="assets\css\tagsinput.css" />
+    <Content Include="assets\fonts\Feather144f.svg" />
+    <Content Include="assets\img\activity-01.jpg" />
+    <Content Include="assets\img\activity-02.jpg" />
+    <Content Include="assets\img\activity-03.jpg" />
+    <Content Include="assets\img\arrow.svg" />
+    <Content Include="assets\img\bg-img-01.png" />
+    <Content Include="assets\img\blog\blog-01.jpg" />
+    <Content Include="assets\img\blog\blog-02.jpg" />
+    <Content Include="assets\img\blog\blog-03.jpg" />
+    <Content Include="assets\img\blog\blog-04.jpg" />
+    <Content Include="assets\img\blog\blog-1.jpg" />
+    <Content Include="assets\img\blog\blog-10.jpg" />
+    <Content Include="assets\img\blog\blog-11.jpg" />
+    <Content Include="assets\img\blog\blog-12.jpg" />
+    <Content Include="assets\img\blog\blog-13.jpg" />
+    <Content Include="assets\img\blog\blog-2.jpg" />
+    <Content Include="assets\img\blog\blog-3.jpg" />
+    <Content Include="assets\img\blog\blog-4.jpg" />
+    <Content Include="assets\img\blog\blog-5.jpg" />
+    <Content Include="assets\img\blog\blog-6.jpg" />
+    <Content Include="assets\img\blog\blog-7.jpg" />
+    <Content Include="assets\img\blog\blog-8.jpg" />
+    <Content Include="assets\img\blog\blog-9.jpg" />
+    <Content Include="assets\img\blog\blog-detail.jpg" />
+    <Content Include="assets\img\call-01.jpg" />
+    <Content Include="assets\img\call-02.jpg" />
+    <Content Include="assets\img\call-03.jpg" />
+    <Content Include="assets\img\call.jpg" />
+    <Content Include="assets\img\clock.png" />
+    <Content Include="assets\img\doctor-03.jpg" />
+    <Content Include="assets\img\error-01.png" />
+    <Content Include="assets\img\error-02.png" />
+    <Content Include="assets\img\favicon.png" />
+    <Content Include="assets\img\github.html" />
+    <Content Include="assets\img\icons\assign-doctor-icon.png" />
+    <Content Include="assets\img\icons\bar-icon.svg" />
+    <Content Include="assets\img\icons\block-icon.png" />
+    <Content Include="assets\img\icons\calendar-icon.svg" />
+    <Content Include="assets\img\icons\calendar.svg" />
+    <Content Include="assets\img\icons\call-icon-01.svg" />
+    <Content Include="assets\img\icons\call-icon-02.svg" />
+    <Content Include="assets\img\icons\call-icon-03.svg" />
+    <Content Include="assets\img\icons\call-incoming.svg" />
+    <Content Include="assets\img\icons\call-outgoing.svg" />
+    <Content Include="assets\img\icons\call-received.svg" />
+    <Content Include="assets\img\icons\call-remove.svg" />
+    <Content Include="assets\img\icons\camera-icon.svg" />
+    <Content Include="assets\img\icons\chat-foot-icon-01.svg" />
+    <Content Include="assets\img\icons\chat-foot-icon-02.svg" />
+    <Content Include="assets\img\icons\chat-foot-icon-03.svg" />
+    <Content Include="assets\img\icons\chat-foot-icon-04.svg" />
+    <Content Include="assets\img\icons\chat-icon-01.svg" />
+    <Content Include="assets\img\icons\chat-icon-02.svg" />
+    <Content Include="assets\img\icons\chat-icon-03.svg" />
+    <Content Include="assets\img\icons\chat-icon-04.svg" />
+    <Content Include="assets\img\icons\chat-icon-05.svg" />
+    <Content Include="assets\img\icons\chat-icon-06.svg" />
+    <Content Include="assets\img\icons\chat-icon-07.svg" />
+    <Content Include="assets\img\icons\chat-icon-08.svg" />
+    <Content Include="assets\img\icons\clip.svg" />
+    <Content Include="assets\img\icons\clock.svg" />
+    <Content Include="assets\img\icons\danger.svg" />
+    <Content Include="assets\img\icons\delete-icon.png" />
+    <Content Include="assets\img\icons\dep-icon-01.svg" />
+    <Content Include="assets\img\icons\dep-icon-02.svg" />
+    <Content Include="assets\img\icons\dep-icon-03.svg" />
+    <Content Include="assets\img\icons\dep-icon-04.svg" />
+    <Content Include="assets\img\icons\dep-icon-05.svg" />
+    <Content Include="assets\img\icons\doctor-dash-01.png" />
+    <Content Include="assets\img\icons\doctor-dash-01.svg" />
+    <Content Include="assets\img\icons\doctor-dash-02.svg" />
+    <Content Include="assets\img\icons\doctor-dash-03.svg" />
+    <Content Include="assets\img\icons\doctor-dash-04.svg" />
+    <Content Include="assets\img\icons\document-icon.svg" />
+    <Content Include="assets\img\icons\draft.svg" />
+    <Content Include="assets\img\icons\edit-2.svg" />
+    <Content Include="assets\img\icons\edit-icon.png" />
+    <Content Include="assets\img\icons\edit.svg" />
+    <Content Include="assets\img\icons\empty-wallet.svg" />
+    <Content Include="assets\img\icons\folder-icon-01.svg" />
+    <Content Include="assets\img\icons\folder-icon-02.svg" />
+    <Content Include="assets\img\icons\folder-icon-03.svg" />
+    <Content Include="assets\img\icons\folder-icon-04.svg" />
+    <Content Include="assets\img\icons\folder-icon-05.svg" />
+    <Content Include="assets\img\icons\forward-icon-01.svg" />
+    <Content Include="assets\img\icons\forward-icon-02.svg" />
+    <Content Include="assets\img\icons\forward-icon-03.svg" />
+    <Content Include="assets\img\icons\gallery-icon.svg" />
+    <Content Include="assets\img\icons\health-img.svg" />
+    <Content Include="assets\img\icons\inbox.svg" />
+    <Content Include="assets\img\icons\login-icon-01.svg" />
+    <Content Include="assets\img\icons\login-icon-02.svg" />
+    <Content Include="assets\img\icons\login-icon-03.svg" />
+    <Content Include="assets\img\icons\logout.svg" />
+    <Content Include="assets\img\icons\mass-icon.svg" />
+    <Content Include="assets\img\icons\medal-01.svg" />
+    <Content Include="assets\img\icons\medal-02.svg" />
+    <Content Include="assets\img\icons\medal-03.svg" />
+    <Content Include="assets\img\icons\menu-icon-01.svg" />
+    <Content Include="assets\img\icons\menu-icon-010.svg" />
+    <Content Include="assets\img\icons\menu-icon-02.svg" />
+    <Content Include="assets\img\icons\menu-icon-03.svg" />
+    <Content Include="assets\img\icons\menu-icon-04.svg" />
+    <Content Include="assets\img\icons\menu-icon-05.svg" />
+    <Content Include="assets\img\icons\menu-icon-06.svg" />
+    <Content Include="assets\img\icons\menu-icon-07.svg" />
+    <Content Include="assets\img\icons\menu-icon-08.svg" />
+    <Content Include="assets\img\icons\menu-icon-09.svg" />
+    <Content Include="assets\img\icons\menu-icon-10.svg" />
+    <Content Include="assets\img\icons\menu-icon-11.svg" />
+    <Content Include="assets\img\icons\menu-icon-12.svg" />
+    <Content Include="assets\img\icons\menu-icon-13.svg" />
+    <Content Include="assets\img\icons\menu-icon-14.svg" />
+    <Content Include="assets\img\icons\menu-icon-15.svg" />
+    <Content Include="assets\img\icons\menu-icon-16.svg" />
+    <Content Include="assets\img\icons\note-icon-01.svg" />
+    <Content Include="assets\img\icons\note-icon-02.svg" />
+    <Content Include="assets\img\icons\pdf-icon-01.svg" />
+    <Content Include="assets\img\icons\pdf-icon-02.svg" />
+    <Content Include="assets\img\icons\pdf-icon-03.svg" />
+    <Content Include="assets\img\icons\pdf-icon-04.svg" />
+    <Content Include="assets\img\icons\plus.svg" />
+    <Content Include="assets\img\icons\printer.svg" />
+    <Content Include="assets\img\icons\profile-add.svg" />
+    <Content Include="assets\img\icons\profile-user.svg" />
+    <Content Include="assets\img\icons\profile.svg" />
+    <Content Include="assets\img\icons\ram.svg" />
+    <Content Include="assets\img\icons\re-fresh.svg" />
+    <Content Include="assets\img\icons\refresh-icon.svg" />
+    <Content Include="assets\img\icons\replay-01.svg" />
+    <Content Include="assets\img\icons\replay.svg" />
+    <Content Include="assets\img\icons\report-icon-01.svg" />
+    <Content Include="assets\img\icons\report-icon-02.svg" />
+    <Content Include="assets\img\icons\report-icon-03.svg" />
+    <Content Include="assets\img\icons\report-icon-04.svg" />
+    <Content Include="assets\img\icons\right-icon.svg" />
+    <Content Include="assets\img\icons\scissor.svg" />
+    <Content Include="assets\img\icons\search-normal.svg" />
+    <Content Include="assets\img\icons\sent.svg" />
+    <Content Include="assets\img\icons\setting-icon-01.svg" />
+    <Content Include="assets\img\icons\social-01.svg" />
+    <Content Include="assets\img\icons\social-02.svg" />
+    <Content Include="assets\img\icons\social-03.svg" />
+    <Content Include="assets\img\icons\social-04.svg" />
+    <Content Include="assets\img\icons\sort-icon-01.svg" />
+    <Content Include="assets\img\icons\sort-icon-02.svg" />
+    <Content Include="assets\img\icons\star-empty.svg" />
+    <Content Include="assets\img\icons\star.svg" />
+    <Content Include="assets\img\icons\tag-icon-01.svg" />
+    <Content Include="assets\img\icons\tag-icon-02.svg" />
+    <Content Include="assets\img\icons\tag-icon-03.svg" />
+    <Content Include="assets\img\icons\tag-icon-04.svg" />
+    <Content Include="assets\img\icons\tag.svg" />
+    <Content Include="assets\img\icons\timer.svg" />
+    <Content Include="assets\img\icons\trash.svg" />
+    <Content Include="assets\img\icons\unlock-icon.png" />
+    <Content Include="assets\img\icons\user-icon.svg" />
+    <Content Include="assets\img\icons\video-icon-01.svg" />
+    <Content Include="assets\img\icons\video-icon-02.svg" />
+    <Content Include="assets\img\icons\video-icon-03.svg" />
+    <Content Include="assets\img\icons\view-icon.png" />
+    <Content Include="assets\img\icons\view.png" />
+    <Content Include="assets\img\icons\voice-icon-01.svg" />
+    <Content Include="assets\img\icons\voice-icon-02.svg" />
+    <Content Include="assets\img\icons\voice-icon-03.svg" />
+    <Content Include="assets\img\icons\warning.svg" />
+    <Content Include="assets\img\img-01.jpg" />
+    <Content Include="assets\img\img-02.jpg" />
+    <Content Include="assets\img\img-03.jpg" />
+    <Content Include="assets\img\img-04.jpg" />
+    <Content Include="assets\img\img-05.jpg" />
+    <Content Include="assets\img\img-1.jpg" />
+    <Content Include="assets\img\img-2.jpg" />
+    <Content Include="assets\img\img-3.jpg" />
+    <Content Include="assets\img\img-4.jpg" />
+    <Content Include="assets\img\invoice-circle1.png" />
+    <Content Include="assets\img\invoice-circle2.png" />
+    <Content Include="assets\img\invoices-icon1.svg" />
+    <Content Include="assets\img\invoices-icon2.svg" />
+    <Content Include="assets\img\invoices-icon3.svg" />
+    <Content Include="assets\img\invoices-icon4.svg" />
+    <Content Include="assets\img\invoices-icon5.png" />
+    <Content Include="assets\img\login-02.png" />
+    <Content Include="assets\img\login-0l.png" />
+    <Content Include="assets\img\login-logo.png" />
+    <Content Include="assets\img\logo-dark.png" />
+    <Content Include="assets\img\logo.png" />
+    <Content Include="assets\img\morning-img-01.png" />
+    <Content Include="assets\img\morning-img-02.png" />
+    <Content Include="assets\img\morning-img-03.png" />
+    <Content Include="assets\img\profile-bg.jpg" />
+    <Content Include="assets\img\profile-user-01.jpg" />
+    <Content Include="assets\img\profile-user-02.jpg" />
+    <Content Include="assets\img\profile-user.jpg" />
+    <Content Include="assets\img\profiles\avatar-01.jpg" />
+    <Content Include="assets\img\profiles\avatar-02.jpg" />
+    <Content Include="assets\img\profiles\avatar-03.jpg" />
+    <Content Include="assets\img\profiles\avatar-04.jpg" />
+    <Content Include="assets\img\profiles\avatar-05.jpg" />
+    <Content Include="assets\img\profiles\avatar-06.jpg" />
+    <Content Include="assets\img\profiles\avatar-07.jpg" />
+    <Content Include="assets\img\profiles\avatar-08.jpg" />
+    <Content Include="assets\img\profiles\avatar-09.jpg" />
+    <Content Include="assets\img\profiles\avatar-10.jpg" />
+    <Content Include="assets\img\profiles\avatar-11.jpg" />
+    <Content Include="assets\img\profiles\avatar-12.jpg" />
+    <Content Include="assets\img\sent.png" />
+    <Content Include="assets\img\signature.png" />
+    <Content Include="assets\img\user-02.jpg" />
+    <Content Include="assets\img\user-03.jpg" />
+    <Content Include="assets\img\user-04.jpg" />
+    <Content Include="assets\img\user-05.jpg" />
+    <Content Include="assets\img\user-06.jpg" />
+    <Content Include="assets\img\user-5.jpg" />
+    <Content Include="assets\img\user-6.jpg" />
+    <Content Include="assets\img\user-7.jpg" />
+    <Content Include="assets\img\user.jpg" />
+    <Content Include="assets\img\profiles\default-profile.png" />
+    <Content Include="assets\js\Admin.js" />
+    <Content Include="assets\js\app.js" />
+    <Content Include="assets\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="assets\js\bootstrap.bundle.min.js" />
+    <Content Include="assets\js\calander.js" />
+    <Content Include="assets\js\circle-progress.min.js" />
+    <Content Include="assets\js\ckeditor.js" />
+    <Content Include="assets\js\dataTables.bootstrap4.min.js" />
+    <Content Include="assets\js\email-decode.min.js" />
+    <Content Include="assets\js\feather.min.js" />
+    <Content Include="assets\js\fullcalendar.min.js" />
+    <Content Include="assets\js\jquery-3.7.1.min.js" />
+    <Content Include="assets\js\jquery-ui.min.js" />
+    <Content Include="assets\js\jquery.counterup.min.js" />
+    <Content Include="assets\js\jquery.dataTables.min.js" />
+    <Content Include="assets\js\jquery.fullcalendar.js" />
+    <Content Include="assets\js\jquery.maskedinput.min.js" />
+    <Content Include="assets\js\jquery.slimscroll.js" />
+    <Content Include="assets\js\jquery.waypoints.js" />
+    <Content Include="assets\js\mask.js" />
+    <Content Include="assets\js\moment.min.js" />
+    <Content Include="assets\js\rocket-loader.min.js" />
+    <Content Include="assets\js\select2.min.js" />
+    <Content Include="assets\js\tagsinput.js" />
+    <Content Include="assets\plugins\alertify\alertify.min.css" />
+    <Content Include="assets\plugins\alertify\alertify.min.js" />
+    <Content Include="assets\plugins\alertify\custom-alertify.min.js" />
+    <Content Include="assets\plugins\apexchart\apexcharts.min.js" />
+    <Content Include="assets\plugins\apexchart\chart-data.js" />
+    <Content Include="assets\plugins\bootstrap-tagsinput\css\bootstrap-tagsinput.css" />
+    <Content Include="assets\plugins\bootstrap-tagsinput\js\bootstrap-tagsinput.js" />
+    <Content Include="assets\plugins\c3-chart\c3.min.css" />
+    <Content Include="assets\plugins\c3-chart\c3.min.js" />
+    <Content Include="assets\plugins\c3-chart\chart-data.js" />
+    <Content Include="assets\plugins\c3-chart\d3.v5.min.js" />
+    <Content Include="assets\plugins\chartjs\chart-data.js" />
+    <Content Include="assets\plugins\chartjs\chart.min.js" />
+    <Content Include="assets\plugins\clipboard\clipboard.min.js" />
+    <Content Include="assets\plugins\countup\jquery.counterup.min.js" />
+    <Content Include="assets\plugins\countup\jquery.missofis-countdown.js" />
+    <Content Include="assets\plugins\countup\jquery.waypoints.min.js" />
+    <Content Include="assets\plugins\datatables\datatables.min.css" />
+    <Content Include="assets\plugins\datatables\datatables.min.js" />
+    <Content Include="assets\plugins\datatables\jquery.dataTables.min.js" />
+    <Content Include="assets\plugins\dragula\css\dragula.min.css" />
+    <Content Include="assets\plugins\dragula\js\drag-drop.min.js" />
+    <Content Include="assets\plugins\dragula\js\dragula.min.js" />
+    <Content Include="assets\plugins\fileupload\fileupload.min.js" />
+    <Content Include="assets\plugins\flot\chart-data.js" />
+    <Content Include="assets\plugins\flot\jquery.flot.fillbetween.js" />
+    <Content Include="assets\plugins\flot\jquery.flot.js" />
+    <Content Include="assets\plugins\flot\jquery.flot.pie.js" />
+    <Content Include="assets\plugins\fontawesome\css\all.min.css" />
+    <Content Include="assets\plugins\fontawesome\css\fontawesome.min.css" />
+    <Content Include="assets\plugins\icons\flags\flags.css" />
+    <Content Include="assets\plugins\icons\flags\flags\ad.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ae.png" />
+    <Content Include="assets\plugins\icons\flags\flags\af.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ag.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ai.png" />
+    <Content Include="assets\plugins\icons\flags\flags\al.png" />
+    <Content Include="assets\plugins\icons\flags\flags\am.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ao.png" />
+    <Content Include="assets\plugins\icons\flags\flags\aq.html" />
+    <Content Include="assets\plugins\icons\flags\flags\ar.png" />
+    <Content Include="assets\plugins\icons\flags\flags\as.png" />
+    <Content Include="assets\plugins\icons\flags\flags\at.png" />
+    <Content Include="assets\plugins\icons\flags\flags\au.png" />
+    <Content Include="assets\plugins\icons\flags\flags\aw.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ax.png" />
+    <Content Include="assets\plugins\icons\flags\flags\az.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ba.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bb.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bd.png" />
+    <Content Include="assets\plugins\icons\flags\flags\be.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bf.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bg.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bh.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bi.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bj.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bl.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bn.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bo.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bq.png" />
+    <Content Include="assets\plugins\icons\flags\flags\br.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bs.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bt.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bv.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bw.png" />
+    <Content Include="assets\plugins\icons\flags\flags\by.png" />
+    <Content Include="assets\plugins\icons\flags\flags\bz.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ca.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cc.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cd.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cf.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cg.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ch.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ci.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ck.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cl.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cn.png" />
+    <Content Include="assets\plugins\icons\flags\flags\co.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cu.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cv.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cw.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cx.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cy.png" />
+    <Content Include="assets\plugins\icons\flags\flags\cz.png" />
+    <Content Include="assets\plugins\icons\flags\flags\de.png" />
+    <Content Include="assets\plugins\icons\flags\flags\dj.png" />
+    <Content Include="assets\plugins\icons\flags\flags\dk.png" />
+    <Content Include="assets\plugins\icons\flags\flags\dm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\do.png" />
+    <Content Include="assets\plugins\icons\flags\flags\dz.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ec.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ee.png" />
+    <Content Include="assets\plugins\icons\flags\flags\eg.png" />
+    <Content Include="assets\plugins\icons\flags\flags\eh.html" />
+    <Content Include="assets\plugins\icons\flags\flags\er.png" />
+    <Content Include="assets\plugins\icons\flags\flags\es.png" />
+    <Content Include="assets\plugins\icons\flags\flags\et.png" />
+    <Content Include="assets\plugins\icons\flags\flags\eu.html" />
+    <Content Include="assets\plugins\icons\flags\flags\fi.png" />
+    <Content Include="assets\plugins\icons\flags\flags\fj.png" />
+    <Content Include="assets\plugins\icons\flags\flags\fk.png" />
+    <Content Include="assets\plugins\icons\flags\flags\fm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\fo.png" />
+    <Content Include="assets\plugins\icons\flags\flags\fr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ga.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gb-eng.html" />
+    <Content Include="assets\plugins\icons\flags\flags\gb-nir.html" />
+    <Content Include="assets\plugins\icons\flags\flags\gb-sct.html" />
+    <Content Include="assets\plugins\icons\flags\flags\gb-wls.html" />
+    <Content Include="assets\plugins\icons\flags\flags\gb.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gd.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ge.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gf.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gg.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gh.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gi.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gl.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gn.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gp.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gq.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gs.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gt.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gu.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gw.png" />
+    <Content Include="assets\plugins\icons\flags\flags\gy.png" />
+    <Content Include="assets\plugins\icons\flags\flags\hk.png" />
+    <Content Include="assets\plugins\icons\flags\flags\hm.html" />
+    <Content Include="assets\plugins\icons\flags\flags\hn.png" />
+    <Content Include="assets\plugins\icons\flags\flags\hr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ht.png" />
+    <Content Include="assets\plugins\icons\flags\flags\hu.png" />
+    <Content Include="assets\plugins\icons\flags\flags\id.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ie.png" />
+    <Content Include="assets\plugins\icons\flags\flags\il.png" />
+    <Content Include="assets\plugins\icons\flags\flags\im.png" />
+    <Content Include="assets\plugins\icons\flags\flags\in.png" />
+    <Content Include="assets\plugins\icons\flags\flags\io.png" />
+    <Content Include="assets\plugins\icons\flags\flags\iq.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ir.png" />
+    <Content Include="assets\plugins\icons\flags\flags\is.png" />
+    <Content Include="assets\plugins\icons\flags\flags\it.png" />
+    <Content Include="assets\plugins\icons\flags\flags\je.png" />
+    <Content Include="assets\plugins\icons\flags\flags\jm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\jo.png" />
+    <Content Include="assets\plugins\icons\flags\flags\jp.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ke.png" />
+    <Content Include="assets\plugins\icons\flags\flags\kg.png" />
+    <Content Include="assets\plugins\icons\flags\flags\kh.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ki.png" />
+    <Content Include="assets\plugins\icons\flags\flags\km.png" />
+    <Content Include="assets\plugins\icons\flags\flags\kn.png" />
+    <Content Include="assets\plugins\icons\flags\flags\kp.png" />
+    <Content Include="assets\plugins\icons\flags\flags\kr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\kw.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ky.png" />
+    <Content Include="assets\plugins\icons\flags\flags\kz.png" />
+    <Content Include="assets\plugins\icons\flags\flags\la.png" />
+    <Content Include="assets\plugins\icons\flags\flags\lb.png" />
+    <Content Include="assets\plugins\icons\flags\flags\lc.png" />
+    <Content Include="assets\plugins\icons\flags\flags\li.png" />
+    <Content Include="assets\plugins\icons\flags\flags\lk.png" />
+    <Content Include="assets\plugins\icons\flags\flags\lr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ls.png" />
+    <Content Include="assets\plugins\icons\flags\flags\lt.png" />
+    <Content Include="assets\plugins\icons\flags\flags\lu.png" />
+    <Content Include="assets\plugins\icons\flags\flags\lv.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ly.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ma.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mc.png" />
+    <Content Include="assets\plugins\icons\flags\flags\md.png" />
+    <Content Include="assets\plugins\icons\flags\flags\me.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mf.html" />
+    <Content Include="assets\plugins\icons\flags\flags\mg.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mh.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mk.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ml.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mn.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mo.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mp.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mq.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ms.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mt.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mu.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mv.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mw.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mx.png" />
+    <Content Include="assets\plugins\icons\flags\flags\my.png" />
+    <Content Include="assets\plugins\icons\flags\flags\mz.png" />
+    <Content Include="assets\plugins\icons\flags\flags\na.png" />
+    <Content Include="assets\plugins\icons\flags\flags\nc.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ne.png" />
+    <Content Include="assets\plugins\icons\flags\flags\nf.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ng.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ni.png" />
+    <Content Include="assets\plugins\icons\flags\flags\nl.png" />
+    <Content Include="assets\plugins\icons\flags\flags\no.png" />
+    <Content Include="assets\plugins\icons\flags\flags\np.png" />
+    <Content Include="assets\plugins\icons\flags\flags\nr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\nu.png" />
+    <Content Include="assets\plugins\icons\flags\flags\nz.png" />
+    <Content Include="assets\plugins\icons\flags\flags\om.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pa.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pe.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pf.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pg.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ph.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pk.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pl.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pn.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ps.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pt.png" />
+    <Content Include="assets\plugins\icons\flags\flags\pw.png" />
+    <Content Include="assets\plugins\icons\flags\flags\py.png" />
+    <Content Include="assets\plugins\icons\flags\flags\qa.png" />
+    <Content Include="assets\plugins\icons\flags\flags\re.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ro.png" />
+    <Content Include="assets\plugins\icons\flags\flags\rs.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ru.png" />
+    <Content Include="assets\plugins\icons\flags\flags\rw.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sa.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sb.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sc.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sd.png" />
+    <Content Include="assets\plugins\icons\flags\flags\se.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sg.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sh.png" />
+    <Content Include="assets\plugins\icons\flags\flags\si.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sj.html" />
+    <Content Include="assets\plugins\icons\flags\flags\sk.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sl.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sn.png" />
+    <Content Include="assets\plugins\icons\flags\flags\so.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ss.png" />
+    <Content Include="assets\plugins\icons\flags\flags\st.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sv.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sx.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sy.png" />
+    <Content Include="assets\plugins\icons\flags\flags\sz.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tc.png" />
+    <Content Include="assets\plugins\icons\flags\flags\td.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tf.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tg.png" />
+    <Content Include="assets\plugins\icons\flags\flags\th.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tj.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tk.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tl.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tn.png" />
+    <Content Include="assets\plugins\icons\flags\flags\to.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tr.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tt.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tv.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tw.png" />
+    <Content Include="assets\plugins\icons\flags\flags\tz.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ua.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ug.png" />
+    <Content Include="assets\plugins\icons\flags\flags\um.png" />
+    <Content Include="assets\plugins\icons\flags\flags\un.html" />
+    <Content Include="assets\plugins\icons\flags\flags\us.png" />
+    <Content Include="assets\plugins\icons\flags\flags\uy.png" />
+    <Content Include="assets\plugins\icons\flags\flags\uz.png" />
+    <Content Include="assets\plugins\icons\flags\flags\va.png" />
+    <Content Include="assets\plugins\icons\flags\flags\vc.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ve.png" />
+    <Content Include="assets\plugins\icons\flags\flags\vg.png" />
+    <Content Include="assets\plugins\icons\flags\flags\vi.png" />
+    <Content Include="assets\plugins\icons\flags\flags\vn.png" />
+    <Content Include="assets\plugins\icons\flags\flags\vu.png" />
+    <Content Include="assets\plugins\icons\flags\flags\wf.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ws.png" />
+    <Content Include="assets\plugins\icons\flags\flags\ye.png" />
+    <Content Include="assets\plugins\icons\flags\flags\yt.png" />
+    <Content Include="assets\plugins\icons\flags\flags\za.png" />
+    <Content Include="assets\plugins\icons\flags\flags\zm.png" />
+    <Content Include="assets\plugins\icons\flags\flags\zw.png" />
+    <Content Include="assets\plugins\icons\ionic\fonts\ioniconsaa26-2.html" />
+    <Content Include="assets\plugins\icons\ionic\fonts\ioniconsaa26-3.html" />
+    <Content Include="assets\plugins\icons\ionic\fonts\ioniconsaa26.html" />
+    <Content Include="assets\plugins\icons\ionic\ionicons.css" />
+    <Content Include="assets\plugins\icons\pe7\fonts\Pe-icon-7-strokebb1d-2.html" />
+    <Content Include="assets\plugins\icons\pe7\fonts\Pe-icon-7-strokebb1d-3.html" />
+    <Content Include="assets\plugins\icons\pe7\fonts\Pe-icon-7-strokebb1d.html" />
+    <Content Include="assets\plugins\icons\pe7\fonts\Pe-icon-7-stroked41d.html" />
+    <Content Include="assets\plugins\icons\pe7\pe-icon-7.css" />
+    <Content Include="assets\plugins\icons\themify\fonts\themify9f24-2.html" />
+    <Content Include="assets\plugins\icons\themify\fonts\themify9f24-3.html" />
+    <Content Include="assets\plugins\icons\themify\fonts\themify9f24.html" />
+    <Content Include="assets\plugins\icons\themify\fonts\themifyd41d.html" />
+    <Content Include="assets\plugins\icons\themify\themify.css" />
+    <Content Include="assets\plugins\icons\typicons\fonts\typicons-2.html" />
+    <Content Include="assets\plugins\icons\typicons\fonts\typicons-3.html" />
+    <Content Include="assets\plugins\icons\typicons\fonts\typicons.html" />
+    <Content Include="assets\plugins\icons\typicons\fonts\typiconsd41d.html" />
+    <Content Include="assets\plugins\icons\typicons\typicons.css" />
+    <Content Include="assets\plugins\icons\weather\fonts\weathericons-regular-webfont-2.html" />
+    <Content Include="assets\plugins\icons\weather\fonts\weathericons-regular-webfont-3.html" />
+    <Content Include="assets\plugins\icons\weather\fonts\weathericons-regular-webfont-4.html" />
+    <Content Include="assets\plugins\icons\weather\fonts\weathericons-regular-webfont.html" />
+    <Content Include="assets\plugins\icons\weather\fonts\weathericons-regular-webfontd41d.html" />
+    <Content Include="assets\plugins\icons\weather\weathericons.css" />
+    <Content Include="assets\plugins\ion-rangeslider\css\ion.rangeSlider.min.css" />
+    <Content Include="assets\plugins\ion-rangeslider\js\custom-rangeslider.js" />
+    <Content Include="assets\plugins\ion-rangeslider\js\ion.rangeSlider.min.js" />
+    <Content Include="assets\plugins\light-gallery\css\lightgallery.min.css" />
+    <Content Include="assets\plugins\light-gallery\fonts\lgd641.svg" />
+    <Content Include="assets\plugins\light-gallery\img\loading.gif" />
+    <Content Include="assets\plugins\light-gallery\img\video-play.png" />
+    <Content Include="assets\plugins\light-gallery\img\vimeo-play.png" />
+    <Content Include="assets\plugins\light-gallery\img\youtube-play.png" />
+    <Content Include="assets\plugins\light-gallery\js\lightgallery-all.min.js" />
+    <Content Include="assets\plugins\lightbox\glightbox.min.css" />
+    <Content Include="assets\plugins\lightbox\glightbox.min.js" />
+    <Content Include="assets\plugins\lightbox\lightbox.js" />
+    <Content Include="assets\plugins\material\fonts\Material-Design-Iconic-Fontd1f1-2.html" />
+    <Content Include="assets\plugins\material\fonts\Material-Design-Iconic-Fontd1f1.html" />
+    <Content Include="assets\plugins\material\fonts\materialdesignicons-webfontd41d.html" />
+    <Content Include="assets\plugins\material\fonts\materialdesignicons-webfontdf71.html" />
+    <Content Include="assets\plugins\material\fonts\materialdesignicons\materialdesignicons-webfontdf71-2.html" />
+    <Content Include="assets\plugins\material\fonts\materialdesignicons\materialdesignicons-webfontdf71-3.html" />
+    <Content Include="assets\plugins\material\fonts\materialdesignicons\materialdesignicons-webfontdf71.html" />
+    <Content Include="assets\plugins\material\materialdesignicons.css" />
+    <Content Include="assets\plugins\moment\moment.min.js" />
+    <Content Include="assets\plugins\morris\chart-data.js" />
+    <Content Include="assets\plugins\morris\morris.min.js" />
+    <Content Include="assets\plugins\morris\raphael-min.js" />
+    <Content Include="assets\plugins\peity\chart-data.js" />
+    <Content Include="assets\plugins\peity\jquery.peity.min.js" />
+    <Content Include="assets\plugins\raty\custom.raty.js" />
+    <Content Include="assets\plugins\raty\jquery.raty.js" />
+    <Content Include="assets\plugins\scrollbar\custom-scroll.js" />
+    <Content Include="assets\plugins\scrollbar\scroll.min.css" />
+    <Content Include="assets\plugins\scrollbar\scrollbar.min.js" />
+    <Content Include="assets\plugins\select2\js\custom-select.js" />
+    <Content Include="assets\plugins\select2\js\select2.min.js" />
+    <Content Include="assets\plugins\simple-calendar\jquery.simple-calendar.js" />
+    <Content Include="assets\plugins\simple-calendar\simple-calendar.css" />
+    <Content Include="assets\plugins\simpleline\fonts\Simple-Line-Iconsb26c-2.html" />
+    <Content Include="assets\plugins\simpleline\fonts\Simple-Line-Iconsb26c-3.html" />
+    <Content Include="assets\plugins\simpleline\fonts\Simple-Line-Iconsb26c-4.html" />
+    <Content Include="assets\plugins\simpleline\fonts\Simple-Line-Iconsb26c.html" />
+    <Content Include="assets\plugins\simpleline\simple-line-icons.css" />
+    <Content Include="assets\plugins\slick\ajax-loader.gif" />
+    <Content Include="assets\plugins\slick\fonts\slick.svg" />
+    <Content Include="assets\plugins\slick\slick-theme.css" />
+    <Content Include="assets\plugins\slick\slick.css" />
+    <Content Include="assets\plugins\slick\slick.js" />
+    <Content Include="assets\plugins\stickynote\sticky.css" />
+    <Content Include="assets\plugins\stickynote\sticky.js" />
+    <Content Include="assets\plugins\summernote\summernote-bs4.min.css" />
+    <Content Include="assets\plugins\summernote\summernote-bs4.min.js" />
+    <Content Include="assets\plugins\summernote\summernote-bs5.min.css" />
+    <Content Include="assets\plugins\summernote\summernote-bs5.min.js" />
+    <Content Include="assets\plugins\sweetalert\sweetalert2.all.min.js" />
+    <Content Include="assets\plugins\sweetalert\sweetalerts.min.js" />
+    <Content Include="assets\plugins\timeline\horizontal-timeline.js" />
+    <Content Include="assets\plugins\toastr\toastr.js" />
+    <Content Include="assets\plugins\toastr\toastr.min.js" />
+    <Content Include="assets\plugins\toastr\toatr.css" />
+    <Content Include="assets_web\css\owl.video.play.html" />
+    <Content Include="assets_web\css\responsive.css" />
+    <Content Include="assets_web\css\style.css" />
+    <Content Include="assets_web\css\vendor.css" />
+    <Content Include="assets_web\fonts\fontawesome-webfont3e6e.svg" />
+    <Content Include="assets_web\fonts\line-awesomeeb4f.svg" />
+    <Content Include="assets_web\fonts\slick-2.html" />
+    <Content Include="assets_web\fonts\slick.html" />
+    <Content Include="assets_web\fonts\slickd41d.html" />
+    <Content Include="assets_web\img\about\2.png" />
+    <Content Include="assets_web\img\about\3.png" />
+    <Content Include="assets_web\img\about\4.png" />
+    <Content Include="assets_web\img\about\5.png" />
+    <Content Include="assets_web\img\about\6.png" />
+    <Content Include="assets_web\img\about\7.png" />
+    <Content Include="assets_web\img\ajax-loader.html" />
+    <Content Include="assets_web\img\banner\1.png" />
+    <Content Include="assets_web\img\banner\2.png" />
+    <Content Include="assets_web\img\banner\3.png" />
+    <Content Include="assets_web\img\banner\4.png" />
+    <Content Include="assets_web\img\banner\5.png" />
+    <Content Include="assets_web\img\bg\1.png" />
+    <Content Include="assets_web\img\bg\2.png" />
+    <Content Include="assets_web\img\bg\3.png" />
+    <Content Include="assets_web\img\bg\4.png" />
+    <Content Include="assets_web\img\blog\1.png" />
+    <Content Include="assets_web\img\blog\2.png" />
+    <Content Include="assets_web\img\blog\3.png" />
+    <Content Include="assets_web\img\blog\4.png" />
+    <Content Include="assets_web\img\blog\5.png" />
+    <Content Include="assets_web\img\blog\6.png" />
+    <Content Include="assets_web\img\blog\blog-single.png" />
+    <Content Include="assets_web\img\favicon.png" />
+    <Content Include="assets_web\img\icon\07.png" />
+    <Content Include="assets_web\img\icon\10.png" />
+    <Content Include="assets_web\img\icon\11.png" />
+    <Content Include="assets_web\img\icon\13.png" />
+    <Content Include="assets_web\img\icon\14.png" />
+    <Content Include="assets_web\img\icon\15.png" />
+    <Content Include="assets_web\img\icon\16.png" />
+    <Content Include="assets_web\img\icon\17.png" />
+    <Content Include="assets_web\img\icon\18.png" />
+    <Content Include="assets_web\img\icon\2.png" />
+    <Content Include="assets_web\img\icon\3.png" />
+    <Content Include="assets_web\img\icon\4.png" />
+    <Content Include="assets_web\img\icon\5.png" />
+    <Content Include="assets_web\img\icon\6.png" />
+    <Content Include="assets_web\img\icon\7.png" />
+    <Content Include="assets_web\img\icon\9.png" />
+    <Content Include="assets_web\img\intro\1.png" />
+    <Content Include="assets_web\img\intro\2.png" />
+    <Content Include="assets_web\img\intro\3.png" />
+    <Content Include="assets_web\img\intro\4.png" />
+    <Content Include="assets_web\img\intro\5.png" />
+    <Content Include="assets_web\img\intro\6.png" />
+    <Content Include="assets_web\img\logo-2.png" />
+    <Content Include="assets_web\img\logo.png" />
+    <Content Include="assets_web\img\logout %281%29.png" />
+    <Content Include="assets_web\img\other\1.png" />
+    <Content Include="assets_web\img\other\2.png" />
+    <Content Include="assets_web\img\other\3.png" />
+    <Content Include="assets_web\img\other\4.png" />
+    <Content Include="assets_web\img\other\5.png" />
+    <Content Include="assets_web\img\other\6.png" />
+    <Content Include="assets_web\img\other\7.png" />
+    <Content Include="assets_web\img\other\8.png" />
+    <Content Include="assets_web\img\other\9.png" />
+    <Content Include="assets_web\img\team\1.png" />
+    <Content Include="assets_web\img\team\2.png" />
+    <Content Include="assets_web\img\team\3.png" />
+    <Content Include="assets_web\img\team\4.png" />
+    <Content Include="assets_web\img\team\5.png" />
+    <Content Include="assets_web\img\team\6.png" />
+    <Content Include="assets_web\img\team\7.png" />
+    <Content Include="assets_web\img\testimonial\1.png" />
+    <Content Include="assets_web\img\testimonial\2.png" />
+    <Content Include="assets_web\img\testimonial\3.png" />
+    <Content Include="assets_web\img\widget\1.png" />
+    <Content Include="assets_web\img\widget\2.png" />
+    <Content Include="assets_web\img\widget\3.png" />
+    <Content Include="assets_web\js\main.js" />
+    <Content Include="assets_web\js\vendor.js" />
+    <Content Include="Features\Doctors\AssignDoctor.aspx" />
+    <Content Include="Features\Site\Blog.aspx" />
+    <Content Include="Features\Appointments\BookAppointment.aspx" />
+    <Content Include="Features\Appointments\BookAppointments.aspx" />
+    <Content Include="Features\Accounts\ChangePassword.aspx" />
+    <Content Include="Features\Admin\AdminDashBoard.aspx" />
+    <Content Include="Features\Accounts\ChangePasswordUser.aspx" />
+    <Content Include="Features\Appointments\Confirm-Appointment.aspx" />
+    <Content Include="Features\Site\Contact.aspx" />
+    <Content Include="Default.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="Features\Site\Default.aspx" />
+    <Content Include="demo-landing\css\animate.css" />
+    <Content Include="demo-landing\css\bootstrap.min.css" />
+    <Content Include="demo-landing\css\font-awesome.min.css" />
+    <Content Include="demo-landing\css\mfp.min.css" />
+    <Content Include="demo-landing\css\style.css" />
+    <Content Include="demo-landing\fonts\fontawesome-webfont3e6e.svg" />
+    <Content Include="demo-landing\img\01.png" />
+    <Content Include="demo-landing\img\1.png" />
+    <Content Include="demo-landing\img\2.png" />
+    <Content Include="demo-landing\img\3.png" />
+    <Content Include="demo-landing\img\4.png" />
+    <Content Include="demo-landing\img\about.png" />
+    <Content Include="demo-landing\img\add-to-cart.svg" />
+    <Content Include="demo-landing\img\appointment.png" />
+    <Content Include="demo-landing\img\blog-details.png" />
+    <Content Include="demo-landing\img\blog.png" />
+    <Content Include="demo-landing\img\contact.png" />
+    <Content Include="demo-landing\img\doctor-details.png" />
+    <Content Include="demo-landing\img\doctor.png" />
+    <Content Include="demo-landing\img\favicon.png" />
+    <Content Include="demo-landing\img\featured\1.png" />
+    <Content Include="demo-landing\img\featured\10.png" />
+    <Content Include="demo-landing\img\featured\11.png" />
+    <Content Include="demo-landing\img\featured\12.png" />
+    <Content Include="demo-landing\img\featured\13.png" />
+    <Content Include="demo-landing\img\featured\14.png" />
+    <Content Include="demo-landing\img\featured\15.png" />
+    <Content Include="demo-landing\img\featured\2.png" />
+    <Content Include="demo-landing\img\featured\3.png" />
+    <Content Include="demo-landing\img\featured\4.png" />
+    <Content Include="demo-landing\img\featured\5.png" />
+    <Content Include="demo-landing\img\featured\6.png" />
+    <Content Include="demo-landing\img\featured\7.png" />
+    <Content Include="demo-landing\img\featured\8.png" />
+    <Content Include="demo-landing\img\featured\9.png" />
+    <Content Include="demo-landing\img\footer.png" />
+    <Content Include="demo-landing\img\header.png" />
+    <Content Include="demo-landing\img\header2.png" />
+    <Content Include="demo-landing\img\logo-2.png" />
+    <Content Include="demo-landing\img\portfolio.png" />
+    <Content Include="demo-landing\img\pricing.png" />
+    <Content Include="demo-landing\img\service-2.png" />
+    <Content Include="demo-landing\img\service-details.png" />
+    <Content Include="demo-landing\img\service.png" />
+    <Content Include="demo-landing\js\bootstrap.min.js" />
+    <Content Include="demo-landing\js\counter.js" />
+    <Content Include="demo-landing\js\demos.js" />
+    <Content Include="demo-landing\js\jquery.min.js" />
+    <Content Include="demo-landing\js\main.js" />
+    <Content Include="demo-landing\js\waypoints.js" />
+    <Content Include="demo-landing\js\wow.js" />
+    <Content Include="Features\Departments\Departments.aspx" />
+    <Content Include="Features\Doctors\Doctor-details.aspx" />
+    <Content Include="Features\Doctors\DoctorDashBoard.aspx" />
+    <Content Include="Features\Doctors\DoctorProfile.aspx" />
+    <Content Include="Features\Doctors\Doctors-Team.aspx" />
+    <Content Include="Features\Doctors\Doctors.aspx" />
+    <Content Include="Features\Doctors\DoctorsAppoinment.aspx" />
+    <Content Include="Features\Doctors\DoctorSetting.aspx" />
+    <Content Include="Features\Accounts\EditProfile.aspx" />
+    <Content Include="Features\Appointments\EditAppointment.aspx" />
+    <Content Include="Features\Departments\EditDepartment.aspx" />
+    <Content Include="Features\Doctors\EditDoctor.aspx" />
+    <Content Include="Features\Patients\EditPatient.aspx" />
+    <Content Include="Features\Receptionists\EditReceptionist.aspx" />
+    <Content Include="Features\Accounts\EditUser.aspx" />
+    <Content Include="Logs\errors.txt" />
+    <Content Include="Features\Accounts\Forget-Password.aspx" />
+    <Content Include="Features\Accounts\Login.aspx" />
+    <Content Include="Features\Accounts\Logout.aspx" />
+    <Content Include="Features\Doctors\Manage_Doctor.aspx" />
+    <Content Include="Features\Appointments\MyAppointment.aspx" />
+    <Content Include="Features\Appointments\Reschedule.aspx" />
+    <Content Include="Features\Patients\PatientProfile.aspx" />
+    <Content Include="Features\Patients\Patients.aspx" />
+    <Content Include="Features\Receptionists\Receptionist.aspx" />
+    <Content Include="Features\Receptionists\ReceptionistDashboard.aspx" />
+    <Content Include="Features\Accounts\Register.aspx" />
+    <Content Include="Features\Scheduling\Schedule.aspx" />
+    <Content Include="Features\Site\Service.aspx" />
+    <Content Include="Features\Site\Settings.aspx" />
+    <Content Include="Features\Accounts\UserProfile.aspx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Features\Site\About.aspx.cs">
+      <DependentUpon>About.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Site\About.aspx.designer.cs">
+      <DependentUpon>About.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Departments\AddDepartment.aspx.cs">
+      <DependentUpon>AddDepartment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Departments\AddDepartment.aspx.designer.cs">
+      <DependentUpon>AddDepartment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\AddDoctor.aspx.cs">
+      <DependentUpon>AddDoctor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\AddDoctor.aspx.designer.cs">
+      <DependentUpon>AddDoctor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Patients\AddPatient.aspx.cs">
+      <DependentUpon>AddPatient.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Patients\AddPatient.aspx.designer.cs">
+      <DependentUpon>AddPatient.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Receptionists\AddReceptionist.aspx.cs">
+      <DependentUpon>AddReceptionist.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Receptionists\AddReceptionist.aspx.designer.cs">
+      <DependentUpon>AddReceptionist.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Appointments\AppointmentReport.aspx.cs">
+      <DependentUpon>AppointmentReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Appointments\AppointmentReport.aspx.designer.cs">
+      <DependentUpon>AppointmentReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Appointments\Appointments.aspx.cs">
+      <DependentUpon>Appointments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Appointments\Appointments.aspx.designer.cs">
+      <DependentUpon>Appointments.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\AssignDoctor.aspx.cs">
+      <DependentUpon>AssignDoctor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\AssignDoctor.aspx.designer.cs">
+      <DependentUpon>AssignDoctor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Site\Blog.aspx.cs">
+      <DependentUpon>Blog.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Site\Blog.aspx.designer.cs">
+      <DependentUpon>Blog.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Appointments\BookAppointment.aspx.cs">
+      <DependentUpon>BookAppointment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Appointments\BookAppointment.aspx.designer.cs">
+      <DependentUpon>BookAppointment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Appointments\BookAppointments.aspx.cs">
+      <DependentUpon>BookAppointments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Appointments\BookAppointments.aspx.designer.cs">
+      <DependentUpon>BookAppointments.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Accounts\ChangePassword.aspx.cs">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Accounts\ChangePassword.aspx.designer.cs">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Admin\AdminDashBoard.aspx.cs">
+      <DependentUpon>AdminDashBoard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Admin\AdminDashBoard.aspx.designer.cs">
+      <DependentUpon>AdminDashBoard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Accounts\ChangePasswordUser.aspx.cs">
+      <DependentUpon>ChangePasswordUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Accounts\ChangePasswordUser.aspx.designer.cs">
+      <DependentUpon>ChangePasswordUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Appointments\Confirm-Appointment.aspx.cs">
+      <DependentUpon>Confirm-Appointment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Appointments\Confirm-Appointment.aspx.designer.cs">
+      <DependentUpon>Confirm-Appointment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Site\Contact.aspx.cs">
+      <DependentUpon>Contact.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Site\Contact.aspx.designer.cs">
+      <DependentUpon>Contact.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Site\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Site\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Departments\Departments.aspx.cs">
+      <DependentUpon>Departments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Departments\Departments.aspx.designer.cs">
+      <DependentUpon>Departments.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Shared\DocCare.Master.cs">
+      <DependentUpon>DocCare.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Shared\DocCare.Master.designer.cs">
+      <DependentUpon>DocCare.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\Doctor-details.aspx.cs">
+      <DependentUpon>Doctor-details.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\Doctor-details.aspx.designer.cs">
+      <DependentUpon>Doctor-details.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\DoctorAdmin.Master.cs">
+      <DependentUpon>DoctorAdmin.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\DoctorAdmin.Master.designer.cs">
+      <DependentUpon>DoctorAdmin.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\DoctorDashBoard.aspx.cs">
+      <DependentUpon>DoctorDashBoard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\DoctorDashBoard.aspx.designer.cs">
+      <DependentUpon>DoctorDashBoard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\DoctorProfile.aspx.cs">
+      <DependentUpon>DoctorProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\DoctorProfile.aspx.designer.cs">
+      <DependentUpon>DoctorProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\Doctors-Team.aspx.cs">
+      <DependentUpon>Doctors-Team.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\Doctors-Team.aspx.designer.cs">
+      <DependentUpon>Doctors-Team.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\Doctors.aspx.cs">
+      <DependentUpon>Doctors.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\Doctors.aspx.designer.cs">
+      <DependentUpon>Doctors.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\DoctorsAppoinment.aspx.cs">
+      <DependentUpon>DoctorsAppoinment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\DoctorsAppoinment.aspx.designer.cs">
+      <DependentUpon>DoctorsAppoinment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\DoctorSetting.aspx.cs">
+      <DependentUpon>DoctorSetting.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\DoctorSetting.aspx.designer.cs">
+      <DependentUpon>DoctorSetting.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Accounts\EditProfile.aspx.cs">
+      <DependentUpon>EditProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Accounts\EditProfile.aspx.designer.cs">
+      <DependentUpon>EditProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Appointments\EditAppointment.aspx.cs">
+      <DependentUpon>EditAppointment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Appointments\EditAppointment.aspx.designer.cs">
+      <DependentUpon>EditAppointment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Departments\EditDepartment.aspx.cs">
+      <DependentUpon>EditDepartment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Departments\EditDepartment.aspx.designer.cs">
+      <DependentUpon>EditDepartment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\EditDoctor.aspx.cs">
+      <DependentUpon>EditDoctor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\EditDoctor.aspx.designer.cs">
+      <DependentUpon>EditDoctor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Patients\EditPatient.aspx.cs">
+      <DependentUpon>EditPatient.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Patients\EditPatient.aspx.designer.cs">
+      <DependentUpon>EditPatient.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Receptionists\EditReceptionist.aspx.cs">
+      <DependentUpon>EditReceptionist.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Receptionists\EditReceptionist.aspx.designer.cs">
+      <DependentUpon>EditReceptionist.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Accounts\EditUser.aspx.cs">
+      <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Accounts\EditUser.aspx.designer.cs">
+      <DependentUpon>EditUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Accounts\Forget-Password.aspx.cs">
+      <DependentUpon>Forget-Password.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Accounts\Forget-Password.aspx.designer.cs">
+      <DependentUpon>Forget-Password.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Accounts\Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Accounts\Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Accounts\Logout.aspx.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Accounts\Logout.aspx.designer.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Doctors\Manage_Doctor.aspx.cs">
+      <DependentUpon>Manage_Doctor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Doctors\Manage_Doctor.aspx.designer.cs">
+      <DependentUpon>Manage_Doctor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Appointments\MyAppointment.aspx.cs">
+      <DependentUpon>MyAppointment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Appointments\MyAppointment.aspx.designer.cs">
+      <DependentUpon>MyAppointment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Appointments\Reschedule.aspx.cs">
+      <DependentUpon>Reschedule.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Appointments\Reschedule.aspx.designer.cs">
+      <DependentUpon>Reschedule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Receptionists\ReceptionistAdmin.Master.cs">
+      <DependentUpon>ReceptionistAdmin.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Receptionists\ReceptionistAdmin.Master.designer.cs">
+      <DependentUpon>ReceptionistAdmin.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Receptionists\ReceptionistDashboard.aspx.cs">
+      <DependentUpon>ReceptionistDashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Receptionists\ReceptionistDashboard.aspx.designer.cs">
+      <DependentUpon>ReceptionistDashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Scheduling\Schedule.aspx.cs">
+      <DependentUpon>Schedule.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Scheduling\Schedule.aspx.designer.cs">
+      <DependentUpon>Schedule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Site\Service.aspx.cs">
+      <DependentUpon>Service.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Site\Service.aspx.designer.cs">
+      <DependentUpon>Service.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Admin\SuperAdmin.Master.cs">
+      <DependentUpon>SuperAdmin.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Admin\SuperAdmin.Master.designer.cs">
+      <DependentUpon>SuperAdmin.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Patients\PatientProfile.aspx.cs">
+      <DependentUpon>PatientProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Patients\PatientProfile.aspx.designer.cs">
+      <DependentUpon>PatientProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Patients\Patients.aspx.cs">
+      <DependentUpon>Patients.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Patients\Patients.aspx.designer.cs">
+      <DependentUpon>Patients.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Features\Receptionists\Receptionist.aspx.cs">
+      <DependentUpon>Receptionist.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Receptionists\Receptionist.aspx.designer.cs">
+      <DependentUpon>Receptionist.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Accounts\Register.aspx.cs">
+      <DependentUpon>Register.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Accounts\Register.aspx.designer.cs">
+      <DependentUpon>Register.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Site\Settings.aspx.cs">
+      <DependentUpon>Settings.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Site\Settings.aspx.designer.cs">
+      <DependentUpon>Settings.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Accounts\UserProfile.aspx.cs">
+      <DependentUpon>UserProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Accounts\UserProfile.aspx.designer.cs">
+      <DependentUpon>UserProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="webConfig\EmailService.cs" />
+    <Compile Include="webConfig\OTPService.cs" />
+    <Compile Include="webConfig\RazorpayConfig.cs" />
+    <Compile Include="webConfig\SlotService.cs" />
+    <Compile Include="webConfig\AppointmentNotifier.cs" />
+    <Compile Include="webConfig\AppointmentStatus.cs" />
+    <Compile Include="webConfig\DoctorName.cs" />
+    <Compile Include="webConfig\PatientCode.cs" />
+    <Compile Include="webConfig\ReminderService.cs" />
+    <Compile Include="api\CreateOrderHandler.cs" />
+    <Compile Include="api\VerifyPaymentHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Features\Admin\SuperAdmin.Master" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\fonts\Feather144f.ttf" />
+    <None Include="assets\fonts\Feather144f.woff" />
+    <None Include="assets\plugins\fontawesome\webfonts\fa-brands-400.ttf" />
+    <None Include="assets\plugins\fontawesome\webfonts\fa-brands-400.woff2" />
+    <None Include="assets\plugins\fontawesome\webfonts\fa-regular-400.ttf" />
+    <None Include="assets\plugins\fontawesome\webfonts\fa-regular-400.woff2" />
+    <None Include="assets\plugins\fontawesome\webfonts\fa-solid-900.ttf" />
+    <None Include="assets\plugins\fontawesome\webfonts\fa-solid-900.woff2" />
+    <None Include="assets\plugins\fontawesome\webfonts\fa-v4compatibility.ttf" />
+    <None Include="assets\plugins\fontawesome\webfonts\fa-v4compatibility.woff2" />
+    <None Include="assets\plugins\icons\ionic\fonts\ioniconsaa26.ttf" />
+    <None Include="assets\plugins\icons\pe7\fonts\Pe-icon-7-strokebb1d.woff" />
+    <None Include="assets\plugins\icons\themify\fonts\themify9f24.woff" />
+    <None Include="assets\plugins\icons\typicons\fonts\typicons.woff" />
+    <None Include="assets\plugins\icons\weather\fonts\weathericons-regular-webfont.woff2" />
+    <None Include="assets\plugins\light-gallery\fonts\lgd41d.eot" />
+    <None Include="assets\plugins\light-gallery\fonts\lgd641.eot" />
+    <None Include="assets\plugins\light-gallery\fonts\lgd641.ttf" />
+    <None Include="assets\plugins\light-gallery\fonts\lgd641.woff" />
+    <None Include="assets\plugins\material\fonts\Material-Design-Iconic-Fontd1f1.woff2" />
+    <None Include="assets\plugins\material\fonts\materialdesignicons-webfontdf71.woff2" />
+    <None Include="assets\plugins\simpleline\fonts\Simple-Line-Iconsb26c.woff2" />
+    <None Include="assets\plugins\slick\fonts\slick.eot" />
+    <None Include="assets\plugins\slick\fonts\slick.ttf" />
+    <None Include="assets\plugins\slick\fonts\slick.woff" />
+    <None Include="assets\plugins\slick\fonts\slickd41d.eot" />
+    <None Include="assets\plugins\summernote\font\summernote.eot" />
+    <None Include="assets\plugins\summernote\font\summernote.ttf" />
+    <None Include="assets\plugins\summernote\font\summernote.woff" />
+    <None Include="assets\plugins\summernote\font\summernote.woff2" />
+    <None Include="assets\plugins\summernote\font\summernoted41d.eot" />
+    <Content Include="Features\Shared\DocCare.Master" />
+    <None Include="assets_web\fonts\fontawesome-webfont3e6e.eot" />
+    <None Include="assets_web\fonts\fontawesome-webfont3e6e.ttf" />
+    <None Include="assets_web\fonts\fontawesome-webfont3e6e.woff" />
+    <None Include="assets_web\fonts\fontawesome-webfont3e6e.woff2" />
+    <None Include="assets_web\fonts\fontawesome-webfontd41d.eot" />
+    <None Include="assets_web\fonts\line-awesome0176.eot" />
+    <None Include="assets_web\fonts\line-awesomeeb4f.eot" />
+    <None Include="assets_web\fonts\line-awesomeeb4f.ttf" />
+    <None Include="assets_web\fonts\line-awesomeeb4f.woff" />
+    <None Include="assets_web\fonts\line-awesomeeb4f.woff2" />
+    <None Include="demo-landing\fonts\fontawesome-webfont3e6e.eot" />
+    <None Include="demo-landing\fonts\fontawesome-webfont3e6e.ttf" />
+    <None Include="demo-landing\fonts\fontawesome-webfont3e6e.woff" />
+    <None Include="demo-landing\fonts\fontawesome-webfont3e6e.woff2" />
+    <None Include="demo-landing\fonts\fontawesome-webfontd41d.eot" />
+    <Content Include="Features\Doctors\DoctorAdmin.Master" />
+    <Content Include="Features\Receptionists\ReceptionistAdmin.Master" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>63249</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

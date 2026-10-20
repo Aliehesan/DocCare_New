@@ -1,0 +1,414 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="DoctorAdmin.Master.cs"
+    Inherits="DocCare_Clinic.DoctorAdmin" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <base href="<%= ResolveUrl("~/") %>" />
+    <%--<meta charset="utf-8">--%>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png" />
+    <title>DocCare</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css" />
+    <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css" />
+    <link rel="stylesheet" href="~/assets/css/feather.css" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="~/assets/css/doccare-custom.css" />
+    <style type="text/css">
+        li.active a
+        {
+            color: #2E37A4 !important;
+        }
+        #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loader-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #loader img {
+        width: 70px;
+        height: auto;
+        margin-bottom: 10px; /* Space between logo and text */
+        animation: pulse 1.5s infinite;
+    }
+
+    #loader p {
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        font-weight: bold;
+        color: #2E37A4;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        animation: fade 1.5s infinite;
+        margin: 0;
+        margin-left:20px;
+    }
+
+    body.loaded #loader {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes fade {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    </style>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <!-- SweetAlert2 + global helpers. Loaded in the page head so alerts registered from
+         code-behind (RegisterStartupScript, rendered inside the form) can call them. -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Toast notification (success / error / info / warning)
+        function swalToast(icon, title, timer) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: icon || 'success',
+                title: title,
+                showConfirmButton: false,
+                timer: timer || 3000,
+                timerProgressBar: true,
+                customClass: { popup: 'swal-modern-popup' }
+            });
+        }
+
+        // Confirm dialog - calls onConfirm() if user presses the confirm button
+        function swalConfirm(title, text, icon, confirmText, onConfirm) {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon || 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#2E37A4',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: confirmText || 'Yes, Proceed',
+                cancelButtonText: 'Cancel',
+                customClass: { popup: 'swal-modern-popup' }
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    onConfirm();
+                }
+            });
+            return false;
+        }
+
+        // Error / Info alert (no confirm needed)
+        function swalAlert(icon, title, text) {
+            Swal.fire({
+                icon: icon || 'error',
+                title: title,
+                text: text,
+                confirmButtonColor: '#2E37A4',
+                customClass: { popup: 'swal-modern-popup' }
+            });
+        }
+    </script>
+    <style>
+        .swal-modern-popup {
+            border-radius: 20px !important;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
+    </asp:ScriptManager>
+    <%-- <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
+    </asp:ScriptManagerProxy>--%>
+    <div id="loader">
+        <div class="loader-content">
+            <img src="assets/img/logo.png" alt="Logo" />
+            <p>
+                Loading...</p>
+        </div>
+    </div>
+    <div class="main-wrapper">
+        <div class="header">
+            <div class="header-left">
+                <a href="<%= ResolveUrl("~/Features/Doctors/DoctorDashBoard.aspx") %>" class="logo">
+                    <img src="assets/img/logo.png" width="35" height="35" alt="logo" />
+                    <span>DocCare</span> </a>
+            </div>
+            <a id="toggle_btn" href="javascript:void(0);">
+                <svg width="18" height="15" viewbox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8616 1.35491C17.8616 1.03286 17.7336 0.724004 17.5059 0.496281C17.2782 0.268559 16.9693 0.140625 16.6473 0.140625H2.07586C1.75381 0.140625 1.44495 0.268559 1.21723 0.496281C0.989504 0.724004 0.861572 1.03286 0.861572 1.35491C0.861572 1.67696 0.989504 1.98582 1.21723 2.21354C1.44495 2.44126 1.75381 2.5692 2.07586 2.5692H16.6473C16.9693 2.5692 17.2782 2.44126 17.5059 2.21354C17.7336 1.98582 17.8616 1.67696 17.8616 1.35491Z" fill="#2E37A4"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8616 7.42522C17.8616 7.10317 17.7336 6.79432 17.5059 6.56659C17.2782 6.33887 16.9693 6.21094 16.6473 6.21094H2.07586C1.75381 6.21094 1.44495 6.33887 1.21723 6.56659C0.989504 6.79432 0.861572 7.10317 0.861572 7.42522C0.861572 7.74727 0.989504 8.05613 1.21723 8.28385C1.44495 8.51158 1.75381 8.63951 2.07586 8.63951H16.6473C16.9693 8.63951 17.2782 8.51158 17.5059 8.28385C17.7336 8.05613 17.8616 7.74727 17.8616 7.42522Z" fill="#2E37A4"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8616 13.4955C17.8616 13.1735 17.7336 12.8646 17.5059 12.6369C17.2782 12.4092 16.9693 12.2812 16.6473 12.2812H9.36157C9.03952 12.2812 8.73067 12.4092 8.50294 12.6369C8.27522 12.8646 8.14729 13.1735 8.14729 13.4955C8.14729 13.8176 8.27522 14.1264 8.50294 14.3542C8.73067 14.5819 9.03952 14.7098 9.36157 14.7098H16.6473C16.9693 14.7098 17.2782 14.5819 17.5059 14.3542C17.7336 14.1264 17.8616 13.8176 17.8616 13.4955Z" fill="#2E37A4"/>
+                </svg>
+            </a><a id="mobile_btn" class="mobile_btn float-start" href="#sidebar">
+                <svg width="18" height="15" viewbox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8616 1.35491C17.8616 1.03286 17.7336 0.724004 17.5059 0.496281C17.2782 0.268559 16.9693 0.140625 16.6473 0.140625H2.07586C1.75381 0.140625 1.44495 0.268559 1.21723 0.496281C0.989504 0.724004 0.861572 1.03286 0.861572 1.35491C0.861572 1.67696 0.989504 1.98582 1.21723 2.21354C1.44495 2.44126 1.75381 2.5692 2.07586 2.5692H16.6473C16.9693 2.5692 17.2782 2.44126 17.5059 2.21354C17.7336 1.98582 17.8616 1.67696 17.8616 1.35491Z" fill="#2E37A4"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8616 7.42522C17.8616 7.10317 17.7336 6.79432 17.5059 6.56659C17.2782 6.33887 16.9693 6.21094 16.6473 6.21094H2.07586C1.75381 6.21094 1.44495 6.33887 1.21723 6.56659C0.989504 6.79432 0.861572 7.10317 0.861572 7.42522C0.861572 7.74727 0.989504 8.05613 1.21723 8.28385C1.44495 8.51158 1.75381 8.63951 2.07586 8.63951H16.6473C16.9693 8.63951 17.2782 8.51158 17.5059 8.28385C17.7336 8.05613 17.8616 7.74727 17.8616 7.42522Z" fill="#2E37A4"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8616 13.4955C17.8616 13.1735 17.7336 12.8646 17.5059 12.6369C17.2782 12.4092 16.9693 12.2812 16.6473 12.2812H9.36157C9.03952 12.2812 8.73067 12.4092 8.50294 12.6369C8.27522 12.8646 8.14729 13.1735 8.14729 13.4955C8.14729 13.8176 8.27522 14.1264 8.50294 14.3542C8.73067 14.5819 9.03952 14.7098 9.36157 14.7098H16.6473C16.9693 14.7098 17.2782 14.5819 17.5059 14.3542C17.7336 14.1264 17.8616 13.8176 17.8616 13.4955Z" fill="#2E37A4"/>
+                </svg>
+            </a>
+            <ul class="nav user-menu float-end">
+                <li class="nav-item dropdown has-arrow user-profile-list"><a href="" class="dropdown-toggle nav-link user-link"
+                    data-bs-toggle="dropdown">
+                    <div class="user-names">
+                        <h5>
+                            <% = Session["DoctorName"] != null && Session["DoctorName"].ToString() != "" ? "Dr. " + Session["DoctorName"].ToString() : "Guest" %>
+                        </h5>
+                    </div>
+                    <div class="user-icon">
+                        <i class="fa fa-user-circle" data-bs-toggle="tooltip" aria-label="fa fa-user-circle"
+                            data-bs-original-title="Profile" style="width: 10px; height: 25px; color: #2E37A4;
+                            font-size: 26px;"></i>
+                    </div>
+                </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="<%= ResolveUrl("~/Features/Doctors/DoctorProfile.aspx") %>">My Profile</a> <a class="dropdown-item"
+                            href="<%= ResolveUrl("~/Features/Doctors/EditDoctor.aspx") %>">Edit Profile</a> <a class="dropdown-item" href="<%= ResolveUrl("~/Features/Accounts/ChangePassword.aspx") %>">
+                                Change Password</a> <a class="dropdown-item" href="<%= ResolveUrl("~/Features/Accounts/Login.aspx") %>">Logout</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="dropdown mobile-user-menu float-end">
+                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-ellipsis-vertical"></i></a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <a class="dropdown-item" href="<%= ResolveUrl("~/Features/Doctors/DoctorProfile.aspx") %>">My Profile</a> <a class="dropdown-item"
+                        href="<%= ResolveUrl("~/Features/Doctors/EditDoctor.aspx") %>">Edit Profile</a> <a class="dropdown-item" href="<%= ResolveUrl("~/Features/Accounts/ChangePassword.aspx") %>">
+                            Change Password</a> <a class="dropdown-item" href="<%= ResolveUrl("~/Features/Accounts/Login.aspx") %>">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-inner slimscroll">
+            <div id="sidebar-menu" class="sidebar-menu">
+                <ul>
+                    <li class="menu-title">Main</li>
+                    <!-- Dashboard -->
+                    <li id="menuDashboard"><a href="<%= ResolveUrl("~/Features/Doctors/DoctorDashBoard.aspx") %>"><span class="menu-side">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewbox="0 0 21 20"
+                            fill="none">
+                                            <path d="M18.4832 9.08073V3.41406C18.4832 2.16406 17.9499 1.66406 16.6249 1.66406H13.2582C11.9332 1.66406 11.3999 2.16406 11.3999 3.41406V9.08073C11.3999 10.3307 11.9332 10.8307 13.2582 10.8307H16.6249C17.9499 10.8307 18.4832 10.3307 18.4832 9.08073Z" fill="#333548" fill-opacity="0.75"/>
+                                            <path d="M9.73324 10.9141V16.5807C9.73324 17.8307 9.1999 18.3307 7.8749 18.3307H4.50824C3.18324 18.3307 2.6499 17.8307 2.6499 16.5807V10.9141C2.6499 9.66406 3.18324 9.16406 4.50824 9.16406H7.8749C9.1999 9.16406 9.73324 9.66406 9.73324 10.9141Z" fill="#333548" fill-opacity="0.75"/>
+                                            <path opacity="0.4" d="M18.4832 16.5833V14.25C18.4832 13 17.9499 12.5 16.6249 12.5H13.2582C11.9332 12.5 11.3999 13 11.3999 14.25V16.5833C11.3999 17.8333 11.9332 18.3333 13.2582 18.3333H16.6249C17.9499 18.3333 18.4832 17.8333 18.4832 16.5833Z" fill="#333548" fill-opacity="0.75"/>
+                                            <path opacity="0.4" d="M9.73324 5.7474V3.41406C9.73324 2.16406 9.1999 1.66406 7.8749 1.66406H4.50824C3.18324 1.66406 2.6499 2.16406 2.6499 3.41406V5.7474C2.6499 6.9974 3.18324 7.4974 4.50824 7.4974H7.8749C9.1999 7.4974 9.73324 6.9974 9.73324 5.7474Z" fill="#333548" fill-opacity="0.75"/>
+                                            </svg>
+                    </span><span>Dashboard</span> </a></li>
+                    <!-- Patients -->
+                    <li id="menuPatient"><a href="<%= ResolveUrl("~/Features/Patients/Patients.aspx") %>"><span class="menu-side">
+                        <svg width="22" height="21" viewbox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path opacity="0.4" d="M15.9048 6.79875C15.8436 6.79 15.7823 6.79 15.7211 6.79875C14.3648 6.755 13.2886 5.64375 13.2886 4.27875C13.2886 2.8875 14.4173 1.75 15.8173 1.75C17.2086 1.75 18.3461 2.87875 18.3461 4.27875C18.3373 5.64375 17.2611 6.755 15.9048 6.79875Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path opacity="0.4" d="M18.7576 12.8638C17.7776 13.5201 16.4038 13.7651 15.1351 13.5988C15.4676 12.8813 15.6426 12.0851 15.6513 11.2451C15.6513 10.3701 15.4588 9.53883 15.0913 8.81258C16.3863 8.63758 17.7601 8.88257 18.7488 9.53882C20.1313 10.4488 20.1313 11.9451 18.7576 12.8638Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path opacity="0.4" d="M6.20199 6.79875C6.26324 6.79 6.32449 6.79 6.38574 6.79875C7.74199 6.755 8.81824 5.64375 8.81824 4.27875C8.81824 2.8875 7.68949 1.75 6.28949 1.75C4.89824 1.75 3.76074 2.87875 3.76074 4.27875C3.76949 5.64375 4.84574 6.755 6.20199 6.79875Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path opacity="0.4" d="M6.29739 11.2452C6.29739 12.094 6.48114 12.899 6.81364 13.6252C5.57989 13.7565 4.29364 13.494 3.34864 12.8727C1.96614 11.954 1.96614 10.4577 3.34864 9.53899C4.28489 8.90899 5.60614 8.65525 6.84864 8.79525C6.48989 9.53025 6.29739 10.3615 6.29739 11.2452Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M11.1716 13.8862C11.1016 13.8775 11.0229 13.8775 10.9441 13.8862C9.3341 13.8337 8.04785 12.5125 8.04785 10.885C8.04785 9.2225 9.3866 7.875 11.0579 7.875C12.7204 7.875 14.0679 9.2225 14.0679 10.885C14.0679 12.5125 12.7904 13.8337 11.1716 13.8862Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M8.32834 15.7C7.00709 16.5837 7.00709 18.0362 8.32834 18.9112C9.83334 19.9175 12.3008 19.9175 13.8058 18.9112C15.1271 18.0275 15.1271 16.575 13.8058 15.7C12.3096 14.6937 9.84209 14.6937 8.32834 15.7Z" fill="#333548" fill-opacity="0.75"/>
+                                        </svg>
+                    </span><span>Patients</span></a></li>
+                    <!-- Appointments -->
+                    <li id="menuAppointment"><a href="<%= ResolveUrl("~/Features/Appointments/Appointments.aspx") %>"><span class="menu-side">
+                        <svg width="21" height="20" viewbox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14.5251 2.96406V1.66406C14.5251 1.3224 14.2418 1.03906 13.9001 1.03906C13.5584 1.03906 13.2751 1.3224 13.2751 1.66406V2.91406H7.85843V1.66406C7.85843 1.3224 7.57509 1.03906 7.23343 1.03906C6.89176 1.03906 6.60843 1.3224 6.60843 1.66406V2.96406C4.35843 3.17239 3.26676 4.51406 3.10009 6.50573C3.08343 6.74739 3.28343 6.94739 3.51676 6.94739H17.6168C17.8584 6.94739 18.0584 6.73906 18.0334 6.50573C17.8668 4.51406 16.7751 3.17239 14.5251 2.96406Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path opacity="0.4" d="M17.2333 8.20312C17.6917 8.20312 18.0667 8.57812 18.0667 9.03646V14.1698C18.0667 16.6698 16.8167 18.3365 13.9 18.3365H7.23332C4.31665 18.3365 3.06665 16.6698 3.06665 14.1698V9.03646C3.06665 8.57812 3.44165 8.20312 3.89998 8.20312H17.2333Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M7.64998 12.5017C7.43332 12.5017 7.21665 12.41 7.05832 12.26C6.90832 12.1017 6.81665 11.885 6.81665 11.6684C6.81665 11.4517 6.90832 11.235 7.05832 11.0767C7.29165 10.8434 7.65832 10.7683 7.96665 10.9017C8.07498 10.9433 8.16665 11.0017 8.24165 11.0767C8.39165 11.235 8.48332 11.4517 8.48332 11.6684C8.48332 11.885 8.39165 12.1017 8.24165 12.26C8.08332 12.41 7.86665 12.5017 7.64998 12.5017Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M10.5662 12.5017C10.3496 12.5017 10.1329 12.41 9.97458 12.26C9.82458 12.1017 9.73291 11.885 9.73291 11.6684C9.73291 11.4517 9.82458 11.235 9.97458 11.0767C10.0496 11.0017 10.1412 10.9433 10.2496 10.9017C10.5579 10.7683 10.9246 10.8434 11.1579 11.0767C11.3079 11.235 11.3996 11.4517 11.3996 11.6684C11.3996 11.885 11.3079 12.1017 11.1579 12.26C11.1162 12.2933 11.0746 12.3267 11.0329 12.36C10.9829 12.3933 10.9329 12.4184 10.8829 12.435C10.8329 12.46 10.7829 12.4767 10.7329 12.485C10.6746 12.4934 10.6246 12.5017 10.5662 12.5017Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M13.4837 12.5026C13.2671 12.5026 13.0504 12.4109 12.8921 12.2609C12.7421 12.1026 12.6504 11.8859 12.6504 11.6693C12.6504 11.4526 12.7421 11.236 12.8921 11.0776C12.9754 11.0026 13.0587 10.9443 13.1671 10.9026C13.3171 10.8359 13.4837 10.8193 13.6504 10.8526C13.7004 10.8609 13.7504 10.8776 13.8004 10.9026C13.8504 10.9193 13.9004 10.9443 13.9504 10.9776C13.9921 11.011 14.0337 11.0443 14.0754 11.0776C14.2254 11.236 14.3171 11.4526 14.3171 11.6693C14.3171 11.8859 14.2254 12.1026 14.0754 12.2609C14.0337 12.2943 13.9921 12.3276 13.9504 12.3609C13.9004 12.3943 13.8504 12.4193 13.8004 12.436C13.7504 12.461 13.7004 12.4776 13.6504 12.486C13.5921 12.4943 13.5337 12.5026 13.4837 12.5026Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M7.64998 15.4167C7.54165 15.4167 7.43332 15.3917 7.33332 15.35C7.22498 15.3084 7.14165 15.25 7.05832 15.175C6.90832 15.0167 6.81665 14.8 6.81665 14.5833C6.81665 14.3667 6.90832 14.15 7.05832 13.9917C7.14165 13.9167 7.22498 13.8583 7.33332 13.8167C7.48332 13.75 7.64998 13.7333 7.81665 13.7667C7.86665 13.775 7.91665 13.7917 7.96665 13.8167C8.01665 13.8333 8.06665 13.8584 8.11665 13.8917C8.15832 13.925 8.19998 13.9584 8.24165 13.9917C8.39165 14.15 8.48332 14.3667 8.48332 14.5833C8.48332 14.8 8.39165 15.0167 8.24165 15.175C8.19998 15.2083 8.15832 15.25 8.11665 15.275C8.06665 15.3083 8.01665 15.3334 7.96665 15.35C7.91665 15.375 7.86665 15.3917 7.81665 15.4C7.75832 15.4084 7.70832 15.4167 7.64998 15.4167Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M10.5662 15.4141C10.3496 15.4141 10.1329 15.3224 9.97458 15.1724C9.82458 15.014 9.73291 14.7974 9.73291 14.5807C9.73291 14.3641 9.82458 14.1474 9.97458 13.9891C10.2829 13.6807 10.8496 13.6807 11.1579 13.9891C11.3079 14.1474 11.3996 14.3641 11.3996 14.5807C11.3996 14.7974 11.3079 15.014 11.1579 15.1724C10.9996 15.3224 10.7829 15.4141 10.5662 15.4141Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M13.4837 15.4141C13.2671 15.4141 13.0504 15.3224 12.8921 15.1724C12.7421 15.014 12.6504 14.7974 12.6504 14.5807C12.6504 14.3641 12.7421 14.1474 12.8921 13.9891C13.2004 13.6807 13.7671 13.6807 14.0754 13.9891C14.2254 14.1474 14.3171 14.3641 14.3171 14.5807C14.3171 14.7974 14.2254 15.014 14.0754 15.1724C13.9171 15.3224 13.7004 15.4141 13.4837 15.4141Z" fill="#333548" fill-opacity="0.75"/>
+                                        </svg>
+                    </span><span>Appointments</span> </a></li>
+                    <!-- Schedule-->
+                    <li id="menuSchedule"><a href="<%= ResolveUrl("~/Features/Scheduling/Schedule.aspx") %>"><span class="menu-side">
+                        <svg width="21" height="20" viewbox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14.5251 2.96406V1.66406C14.5251 1.3224 14.2418 1.03906 13.9001 1.03906C13.5584 1.03906 13.2751 1.3224 13.2751 1.66406V2.91406H7.85843V1.66406C7.85843 1.3224 7.57509 1.03906 7.23343 1.03906C6.89176 1.03906 6.60843 1.3224 6.60843 1.66406V2.96406C4.35843 3.17239 3.26676 4.51406 3.10009 6.50573C3.08343 6.74739 3.28343 6.94739 3.51676 6.94739H17.6168C17.8584 6.94739 18.0584 6.73906 18.0334 6.50573C17.8668 4.51406 16.7751 3.17239 14.5251 2.96406Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path opacity="0.4" d="M18.0667 9.03699V10.487C18.0667 10.9953 17.6167 11.387 17.1167 11.3037C16.8833 11.2703 16.6417 11.2453 16.4 11.2453C13.875 11.2453 11.8167 13.3036 11.8167 15.8286C11.8167 16.212 11.9667 16.7453 12.125 17.2287C12.3083 17.7703 11.9083 18.3286 11.3333 18.3286H7.23332C4.31665 18.3286 3.06665 16.662 3.06665 14.162V9.02865C3.06665 8.57031 3.44165 8.19531 3.89998 8.19531H17.2333C17.6917 8.20365 18.0667 8.57865 18.0667 9.03699Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M16.4 12.5C14.5583 12.5 13.0667 13.9917 13.0667 15.8333C13.0667 16.4583 13.2417 17.05 13.55 17.55C14.125 18.5167 15.1833 19.1667 16.4 19.1667C17.6167 19.1667 18.675 18.5167 19.25 17.55C19.5583 17.05 19.7333 16.4583 19.7333 15.8333C19.7333 13.9917 18.2417 12.5 16.4 12.5ZM18.125 15.475L16.35 17.1167C16.2333 17.225 16.075 17.2833 15.925 17.2833C15.7667 17.2833 15.6083 17.225 15.4833 17.1L14.6583 16.275C14.4167 16.0333 14.4167 15.6333 14.6583 15.3917C14.9 15.15 15.3 15.15 15.5417 15.3917L15.9416 15.7917L17.275 14.5583C17.525 14.325 17.925 14.3417 18.1583 14.5917C18.3917 14.8417 18.375 15.2333 18.125 15.475Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M7.64998 12.5033C7.43332 12.5033 7.21665 12.4117 7.05832 12.2617C6.90832 12.1033 6.81665 11.8867 6.81665 11.67C6.81665 11.4533 6.90832 11.2367 7.05832 11.0784C7.24998 10.8867 7.54165 10.795 7.81665 10.8533C7.86665 10.8617 7.91665 10.8783 7.96665 10.9033C8.01665 10.92 8.06665 10.945 8.11665 10.9784C8.15831 11.0117 8.19998 11.045 8.24165 11.0784C8.39165 11.2367 8.48332 11.4533 8.48332 11.67C8.48332 11.8867 8.39165 12.1033 8.24165 12.2617C8.19998 12.295 8.15831 12.3283 8.11665 12.3617C8.06665 12.395 8.01665 12.42 7.96665 12.4367C7.91665 12.4617 7.86665 12.4784 7.81665 12.4867C7.75831 12.495 7.69998 12.5033 7.64998 12.5033Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M10.5667 12.5C10.3501 12.5 10.1334 12.4083 9.97507 12.2583C9.82507 12.1 9.7334 11.8833 9.7334 11.6667C9.7334 11.45 9.82507 11.2333 9.97507 11.075C10.2917 10.7667 10.8501 10.7667 11.1584 11.075C11.3084 11.2333 11.4001 11.45 11.4001 11.6667C11.4001 11.8833 11.3084 12.1 11.1584 12.2583C11.0001 12.4083 10.7834 12.5 10.5667 12.5Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M7.64998 15.4157C7.43332 15.4157 7.21665 15.3241 7.05832 15.1741C6.90832 15.0157 6.81665 14.7991 6.81665 14.5824C6.81665 14.3657 6.90832 14.1491 7.05832 13.9908C7.14165 13.9158 7.22499 13.8574 7.33332 13.8157C7.64165 13.6824 8.00832 13.7574 8.24165 13.9908C8.39165 14.1491 8.48332 14.3657 8.48332 14.5824C8.48332 14.7991 8.39165 15.0157 8.24165 15.1741C8.08332 15.3241 7.86665 15.4157 7.64998 15.4157Z" fill="#333548" fill-opacity="0.75"/>
+                                        </svg>
+                    </span><span>Working Hours &amp; Leave</span> </a></li>
+                    <!-- Settings -->
+                    <li id="menuSetting"><a href="<%= ResolveUrl("~/Features/Site/Settings.aspx") %>"><span class="menu-side">
+                        <svg width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path opacity="0.4" d="M1.6665 10.7319V9.26523C1.6665 8.39856 2.37484 7.6819 3.24984 7.6819C4.75817 7.6819 5.37484 6.61523 4.6165 5.3069C4.18317 4.5569 4.4415 3.5819 5.19984 3.14856L6.6415 2.32356C7.29984 1.9319 8.14984 2.16523 8.5415 2.82356L8.63317 2.9819C9.38317 4.29023 10.6165 4.29023 11.3748 2.9819L11.4665 2.82356C11.8582 2.16523 12.7082 1.9319 13.3665 2.32356L14.8082 3.14856C15.5665 3.5819 15.8248 4.5569 15.3915 5.3069C14.6332 6.61523 15.2498 7.6819 16.7582 7.6819C17.6248 7.6819 18.3415 8.39023 18.3415 9.26523V10.7319C18.3415 11.5986 17.6332 12.3152 16.7582 12.3152C15.2498 12.3152 14.6332 13.3819 15.3915 14.6902C15.8248 15.4486 15.5665 16.4152 14.8082 16.8486L13.3665 17.6736C12.7082 18.0652 11.8582 17.8319 11.4665 17.1736L11.3748 17.0152C10.6248 15.7069 9.3915 15.7069 8.63317 17.0152L8.5415 17.1736C8.14984 17.8319 7.29984 18.0652 6.6415 17.6736L5.19984 16.8486C4.4415 16.4152 4.18317 15.4402 4.6165 14.6902C5.37484 13.3819 4.75817 12.3152 3.24984 12.3152C2.37484 12.3152 1.6665 11.5986 1.6665 10.7319Z" fill="#333548" fill-opacity="0.75"/>
+                                        <path d="M9.99984 12.7057C11.4956 12.7057 12.7082 11.4932 12.7082 9.9974C12.7082 8.50162 11.4956 7.28906 9.99984 7.28906C8.50407 7.28906 7.2915 8.50162 7.2915 9.9974C7.2915 11.4932 8.50407 12.7057 9.99984 12.7057Z" fill="#333548" fill-opacity="0.75"/>
+                                        </svg>
+                    </span><span>Settings</span> </a></li>
+                </ul>
+                <!-- Logout -->
+                <div class="logout-btn">
+                    <asp:LinkButton ID="btnLogout" runat="server" OnClick="btnLogout_Click" CssClass="logout-btn"
+                        CausesValidation="false" Text="" UseSubmitBehavior="false">
+                                    <span class="menu-side">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path opacity="0.4" d="M11.0338 1.66406C11.4254 1.66406 11.7504 1.98073 11.7504 2.38073V17.6224C11.7504 18.0141 11.4338 18.3391 11.0338 18.3391C6.12544 18.3391 2.70044 14.9141 2.70044 10.0057C2.70044 5.0974 6.13377 1.66406 11.0338 1.66406Z" fill="#2E37A4"/>
+                                            <path d="M17.1164 9.61875L14.7497 7.24375C14.5081 7.00208 14.1081 7.00208 13.8664 7.24375C13.6247 7.48542 13.6247 7.88542 13.8664 8.12708L15.1664 9.42708H7.19141C6.84974 9.42708 6.56641 9.71042 6.56641 10.0521C6.56641 10.3938 6.84974 10.6771 7.19141 10.6771H15.1664L13.8664 11.9771C13.6247 12.2188 13.6247 12.6188 13.8664 12.8604C13.9914 12.9854 14.1497 13.0438 14.3081 13.0438C14.4664 13.0438 14.6247 12.9854 14.7497 12.8604L17.1164 10.4854C17.3581 10.2521 17.3581 9.86042 17.1164 9.61875Z" fill="#2E37A4"/>
+                                        </svg>
+                                    </span>
+                                    <span>Logout</span>
+                    </asp:LinkButton>
+                </div>
+            </div>
+        </div>
+    </div>
+    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+    </asp:ContentPlaceHolder>
+    <asp:HiddenField ID="deleteId" runat="server" />
+    </form>
+    <!-- Include all JavaScript files -->
+    <script src="assets/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+    <script src="assets/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <script src="assets/js/feather.min.js" type="text/javascript"></script>
+    <script src="assets/js/jquery.slimscroll.js" type="text/javascript"></script>
+    <script src="assets/js/select2.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/datatables/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+    <script src="assets/js/jquery.waypoints.js" type="text/javascript"></script>
+    <script src="assets/js/jquery.counterup.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/apexchart/apexcharts.min.js" type="text/javascript"></script>
+    <script src="assets/plugins/apexchart/chart-data.js" type="text/javascript"></script>
+    <script src="assets/js/app.js" type="text/javascript"></script>
+    <script src="assets/js/rocket-loader.min.js" data-cf-settings="ac36100db4dcb773c8560a0a-|49"
+        defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var dropdowns = document.querySelectorAll('.dropdown-toggle');
+            dropdowns.forEach(function (dropdown) {
+                dropdown.addEventListener("click", function (event) {
+                    event.stopPropagation(); // Prevent event from bubbling up
+                    var menu = this.nextElementSibling;
+                    document.querySelectorAll(".dropdown-menu").forEach(function (el) {
+                        if (el !== menu) el.classList.remove("show");
+                    });
+                    menu.classList.toggle("show");
+                });
+            });
+
+            document.addEventListener("click", function () {
+                document.querySelectorAll(".dropdown-menu").forEach(function (el) {
+                    el.classList.remove("show");
+                });
+            });
+        });
+    </script>
+    <script>
+        // ✅ Highlight the active menu based on page URL
+        var url = window.location.pathname.toLowerCase();
+
+        // Map your URLs to their corresponding menu item IDs
+        var menuMap = {
+            "Features/Doctors/DoctorDashBoard.aspx": "menuDashboard",            
+            "Features/Receptionists/Receptionist.aspx": "menuReceptionist",
+            "Features/Doctors/Doctors.aspx": "menuDoctor",
+            "Features/Patients/Patients.aspx": "menuPatient",
+            "Features/Appointments/Appointments.aspx": "menuAppointment",
+            "Features/Departments/Departments.aspx": "menuDepartment",
+            "Features/Scheduling/Schedule.aspx": "menuSchedule",
+            "Features/Site/Settings.aspx": "menuSetting",
+        };
+
+        // Loop through the menuMap to find the current page
+        for (var key in menuMap) {
+            var menuItem = document.getElementById(menuMap[key]);
+            if (menuItem && url.includes(key.toLowerCase())) {
+                menuItem.classList.add("active");
+                break;
+            }
+        }
+    </script>
+    <script>
+        window.addEventListener('load', function () {
+            document.body.classList.add('loaded');
+        });
+    </script>
+    <asp:Literal ID="Literal1" runat="server">
+    <div class="sidebar-overlay" data-reff></div>
+</asp:Literal>
+    <script>
+        $(document).on('click', '.sidebar-overlay', function () {
+            $('.sidebar-overlay').removeClass('active');
+            $('.main-wrapper').removeClass('slide-nav');
+        });
+</script>
+</body>
+<script>
+    // ✅ Toggle Sidebar on Toggle Button Click
+    document.getElementById("toggle_btn").addEventListener("click", function () {
+        var sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("active"); // Add/Remove active class for sidebar
+    });
+
+    // ✅ Toggle Sidebar on Mobile Button Click
+    document.getElementById("mobile_btn").addEventListener("click", function (e) {
+        e.preventDefault();
+        var sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("active"); // Add/Remove active class for mobile sidebar
+    });
+
+    // ✅ Close Sidebar When Click Outside (Optional)
+    document.addEventListener("click", function (event) {
+        var sidebar = document.getElementById("sidebar");
+        var toggleBtn = document.getElementById("toggle_btn");
+        var mobileBtn = document.getElementById("mobile_btn");
+
+        // Close sidebar if clicked outside and not on toggle buttons
+        if (!sidebar.contains(event.target) && event.target !== toggleBtn && event.target !== mobileBtn) {
+            sidebar.classList.remove("active");
+        }
+    });
+</script>
+<script>
+    // ✅ Show Loader on Page Load
+    window.addEventListener('load', function () {
+        document.getElementById("loader").style.display = "none";
+    });
+
+    // ✅ Show Loader on Page Change
+    document.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function () {
+            document.getElementById("loader").style.display = "flex";
+        });
+    });
+</script>
+<script>
+    // ✅ Show Loader Until Page Loads
+    window.addEventListener('load', function () {
+        var loader = document.getElementById("loader");
+        loader.classList.add("fade-out"); // Smooth fade out
+        setTimeout(function () {
+            loader.style.display = "none";
+        }, 500);
+    });
+
+    // ✅ Show Loader on Page Change
+    document.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function () {
+            document.getElementById("loader").style.display = "flex";
+        });
+    });
+</script>
+</html>
