@@ -19,7 +19,21 @@ namespace DocCare_Clinic {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal AppointmentsCount;
+        protected global::System.Web.UI.WebControls.Literal litToday;
+
+        protected global::System.Web.UI.WebControls.Literal litTodaySub;
+
+        protected global::System.Web.UI.WebControls.Literal litNext7;
+
+        protected global::System.Web.UI.WebControls.Literal litNext7Sub;
+
+        protected global::System.Web.UI.WebControls.Literal litFollowUps;
+
+        protected global::System.Web.UI.WebControls.Literal litFollowUpsSub;
+
+        protected global::System.Web.UI.WebControls.Literal litRefunds;
+
+        protected global::System.Web.UI.WebControls.Literal litRefundsSub;
         
         /// <summary>
         /// NewPatientsCount control.
@@ -28,6 +42,6 @@ namespace DocCare_Clinic {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal NewPatientsCount;
+
     }
 }

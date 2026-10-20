@@ -28,11 +28,47 @@ namespace DocCare_Clinic
 
                 if (userRole == "Receptionist")
                 {
-                    HideAdminMenus(); // Hide Super Admin menus                                                     
+                    HideAdminMenus(); // Hide Super Admin menus
                 }
-                txtAppointDate.Text = DateTime.Now.ToString("yyyy-MM-dd"); // Set today's date
+                // Today by default; any day in the booking window for phone bookings and follow-ups
+                txtAppointDate.Attributes["min"] = DateTime.Today.ToString("yyyy-MM-dd");
+                txtAppointDate.Attributes["max"] = DateTime.Today.AddDays(SlotService.BookingWindowDays).ToString("yyyy-MM-dd");
+                txtAppointDate.Text = DateTime.Today.ToString("yyyy-MM-dd");
+                PrefillFromLink();
                 BindDoctorsWithSchedule();
-            }           
+                LoadTimes();
+            }
+        }
+
+        // "Book" from the Follow-ups list: ?patientId=&doctorId=&date= fill in the patient, doctor and day
+        void PrefillFromLink()
+        {
+            int id;
+            DataRow p = int.TryParse(Request.QueryString["patientId"], out id) ? LoadPatient(id) : null;
+            if (p != null) UsePatient(p);
+            DateTime day;
+            if (DateTime.TryParse(Request.QueryString["date"], out day))
+                txtAppointDate.Text = ClampDate(day).ToString("yyyy-MM-dd");
+            ViewState["PrefillDoctor"] = Request.QueryString["doctorId"];
+        }
+
+        static DateTime ClampDate(DateTime day)
+        {
+            if (day.Date < DateTime.Today) return DateTime.Today;
+            DateTime last = DateTime.Today.AddDays(SlotService.BookingWindowDays);
+            return day.Date > last ? last : day.Date;
+        }
+
+        DateTime ChosenDate
+        {
+            get { DateTime d; return DateTime.TryParse(txtAppointDate.Text, out d) ? ClampDate(d) : DateTime.Today; }
+        }
+
+        protected void txtAppointDate_TextChanged(object sender, EventArgs e)
+        {
+            txtAppointDate.Text = ChosenDate.ToString("yyyy-MM-dd");
+            BindDoctorsWithSchedule();
+            LoadTimes();
         }
 
         // Staff member at the desk, from the IDs set at login (see Login.aspx.cs)
@@ -87,65 +123,88 @@ namespace DocCare_Clinic
 
         private void BindDoctorsWithSchedule()
         {
+            string keep = ViewState["PrefillDoctor"] as string ?? ddlConsultDoctor.SelectedValue;
+            ViewState["PrefillDoctor"] = null;
             using (SqlConnection con = new SqlConnection(connectionString))
             {
-                // Doctors working today (weekly hours) and not on leave today; weekday 0 = Sunday (1900-01-07 was a Sunday)
+                // Doctors working on the chosen day (weekly hours) and not on leave then; weekday 0 = Sunday (1900-01-07 was a Sunday)
                 string query = @"
             SELECT d.DoctorID, d.Name
             FROM Doctors d
             INNER JOIN DoctorWorkingHours w ON w.DoctorID = d.DoctorID AND w.IsWorking = 1
-                                           AND w.DayOfWeek = DATEDIFF(DAY, '19000107', CAST(GETDATE() AS DATE)) % 7
+                                           AND w.DayOfWeek = DATEDIFF(DAY, '19000107', @Day) % 7
             WHERE d.IsDeleted = 0
-              AND NOT EXISTS (SELECT 1 FROM DoctorLeave l WHERE l.DoctorID = d.DoctorID AND l.LeaveDate = CAST(GETDATE() AS DATE))
+              AND NOT EXISTS (SELECT 1 FROM DoctorLeave l WHERE l.DoctorID = d.DoctorID AND l.LeaveDate = @Day)
             ORDER BY d.Name";
 
                 SqlDataAdapter da = new SqlDataAdapter(query, con);
+                da.SelectCommand.Parameters.Add("@Day", SqlDbType.Date).Value = ChosenDate;
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
+                ddlConsultDoctor.Items.Clear();
                 ddlConsultDoctor.DataSource = dt;
                 ddlConsultDoctor.DataTextField = "Name";
                 ddlConsultDoctor.DataValueField = "DoctorID";
                 ddlConsultDoctor.DataBind();
 
-                ddlConsultDoctor.Items.Insert(0, new ListItem("-- Select Doctor --", "0"));
+                ddlConsultDoctor.Items.Insert(0, new ListItem(dt.Rows.Count == 0 ? "-- No doctor works on this day --" : "-- Select Doctor --", "0"));
+                // keep the doctor when they also work on the new day
+                if (keep != null && ddlConsultDoctor.Items.FindByValue(keep) != null) ddlConsultDoctor.SelectedValue = keep;
             }
         }
 
-        // Walk-in: patient is already at the desk, so SlotService uses the short walk-in buffer.
-        // Returns "hh:mm:ss", or null with a reason the receptionist can read.
-        private string GetNextAvailableSlot(int doctorID, out string reason)
-        {
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-                TimeSpan? slot = SlotService.GetNextAvailableSlot(con, doctorID, SlotService.WalkInBufferMinutes, out reason);
-                return slot.HasValue ? slot.Value.ToString(@"hh\:mm\:ss") : null;
-            }
-        }
-
-        // Show the next free slot as soon as a doctor is picked, before patient details are typed in
         protected void ddlConsultDoctor_SelectedIndexChanged(object sender, EventArgs e)
         {
+            LoadTimes();
+        }
+
+        // Free times of the doctor on the chosen day as chips; today the next one is preselected (walk-in at the desk,
+        // short buffer). For a returning patient, times that clash with their other appointments are left out.
+        void LoadTimes()
+        {
+            string keep = rblTime.SelectedValue;
+            rblTime.Items.Clear();
             int doctorID;
             if (!int.TryParse(ddlConsultDoctor.SelectedValue, out doctorID) || doctorID == 0)
             {
-                lblSlotInfo.Text = "";
+                SlotInfo(ddlConsultDoctor.Items.Count <= 1 ? "No doctor works on " + SlotService.FormatDate(ChosenDate) + "." : "Choose a doctor to see the free times.", false);
                 return;
             }
 
             string reason;
-            string slot = GetNextAvailableSlot(doctorID, out reason);
-            if (slot != null)
+            List<TimeSpan> free;
+            using (SqlConnection con = new SqlConnection(connectionString))
             {
-                lblSlotInfo.Text = "Next available slot: " + SlotService.Format(TimeSpan.Parse(slot));
-                lblSlotInfo.ForeColor = System.Drawing.Color.Green;
+                con.Open();
+                free = SlotService.GetFreeSlots(con, doctorID, ChosenDate, SlotService.WalkInBufferMinutes, out reason);
             }
-            else
+            int patient;
+            string clash = null;
+            if (int.TryParse(hdnExistingPatientID.Value, out patient))
+                free = free.Where(t =>
+                {
+                    string c = SlotService.PatientConflict(patient, txtName.Text, doctorID, ChosenDate, t, null);
+                    if (c != null && clash == null) clash = c;
+                    return c == null;
+                }).ToList();
+
+            foreach (TimeSpan t in free)
+                rblTime.Items.Add(new ListItem(SlotService.Format(t), t.ToString(@"hh\:mm")));
+            if (free.Count == 0)
             {
-                lblSlotInfo.Text = reason;
-                lblSlotInfo.ForeColor = System.Drawing.Color.Red;
+                SlotInfo(clash ?? reason ?? "No free times on this day.", false);
+                return;
             }
+            rblTime.SelectedValue = rblTime.Items.FindByValue(keep) != null ? keep : rblTime.Items[0].Value;
+            SlotInfo(free.Count + (free.Count == 1 ? " free time" : " free times") + " on " + SlotService.FormatDate(ChosenDate) +
+                     (ChosenDate == DateTime.Today ? " (next one selected)" : ""), true);
+        }
+
+        void SlotInfo(string text, bool ok)
+        {
+            lblSlotInfo.Text = "&middot; " + HttpUtility.HtmlEncode(text);
+            lblSlotInfo.CssClass = "slot-info " + (ok ? "ok" : "none");
         }
 
         // ── Returning patient ─────────────────────────────────────────────────
@@ -207,6 +266,8 @@ namespace DocCare_Clinic
             txtFindPatient.Text = txtName.Text = txtDob.Text = txtAge.Text = txtMobile.Text = txtAddress.Text = "";
             rbMale.Checked = rbFemale.Checked = false;
             SetPersonFieldsLocked(false);
+            LoadTimes();   // a new patient has no other appointments to clash with
+            UpdatePanel1.Update();
             ShowFindResult("", false);
         }
 
@@ -239,6 +300,7 @@ namespace DocCare_Clinic
             SetPersonFieldsLocked(true);
             pnlFind.Visible = false;
             pnlReturning.Visible = true;
+            if (IsPostBack) { LoadTimes(); UpdatePanel1.Update(); }
             rptMatches.DataSource = null;
             rptMatches.DataBind();
         }
@@ -281,7 +343,7 @@ namespace DocCare_Clinic
             string mobile = txtMobile.Text;
             string address = txtAddress.Text;
             int doctorID = Convert.ToInt32(ddlConsultDoctor.SelectedValue);
-            DateTime today = DateTime.Today;
+            DateTime today = ChosenDate;   // the appointment day (named today for the walk-in code below)
 
             if (doctorID == 0)
             {
@@ -290,15 +352,24 @@ namespace DocCare_Clinic
                 return;
             }
 
-            // Fetch next available slot
-            string slotReason;
-            string appointTime = GetNextAvailableSlot(doctorID, out slotReason);
-            if (appointTime == null)
+            // The chosen time must still be free (someone may have booked it online meanwhile)
+            TimeSpan chosen;
+            string slotReason = null;
+            bool slotFree = TimeSpan.TryParse(rblTime.SelectedValue, out chosen);
+            if (slotFree)
+                using (SqlConnection sc = new SqlConnection(connectionString))
+                {
+                    sc.Open();
+                    slotFree = SlotService.IsSlotFree(sc, doctorID, today, chosen, SlotService.WalkInBufferMinutes, out slotReason);
+                }
+            if (!slotFree)
             {
+                LoadTimes();
                 ClientScript.RegisterStartupScript(this.GetType(), "noSlots",
-                    "swalAlert('warning', 'No Slots Available', '" + slotReason.Replace("'", "\\'") + "');", true);
+                    "swalAlert('warning', 'Choose a Time', '" + HttpUtility.JavaScriptStringEncode(slotReason ?? "Please choose a time for the appointment.") + "');", true);
                 return;
             }
+            string appointTime = chosen.ToString(@"hh\:mm\:ss");
 
             // Validate and parse Date of Birth
             DateTime dob;
@@ -316,8 +387,7 @@ namespace DocCare_Clinic
                 age--; // Adjust for birthdays later in the year
             }
 
-            // Returning patient: not with this doctor again today, and the first free time that does not
-            // overlap their other appointments today (e.g. already with another doctor at that time)
+            // Returning patient: not with this doctor again that day, and no overlap with their other appointments
             int? knownPatient;
             using (SqlConnection pc = new SqlConnection(connectionString))
             {
@@ -326,26 +396,14 @@ namespace DocCare_Clinic
             }
             if (knownPatient.HasValue)
             {
-                string clash = null;
-                TimeSpan? pick = null;
-                using (SqlConnection sc = new SqlConnection(connectionString))
+                string clash = SlotService.PatientConflict(knownPatient.Value, patientName, doctorID, today, chosen, null);
+                if (clash != null)
                 {
-                    sc.Open();
-                    string freeReason;
-                    foreach (TimeSpan t in SlotService.GetFreeSlots(sc, doctorID, today, SlotService.WalkInBufferMinutes, out freeReason))
-                    {
-                        string c = SlotService.PatientConflict(knownPatient.Value, patientName, doctorID, today, t, null);
-                        if (c == null) { pick = t; break; }
-                        if (clash == null) clash = c;
-                    }
-                }
-                if (!pick.HasValue)
-                {
+                    LoadTimes();
                     ClientScript.RegisterStartupScript(this.GetType(), "patientClash",
-                        "swalAlert('warning', 'Already Booked', '" + HttpUtility.JavaScriptStringEncode(clash ?? slotReason ?? "No free time is left today.") + "');", true);
+                        "swalAlert('warning', 'Already Booked', '" + HttpUtility.JavaScriptStringEncode(clash) + "');", true);
                     return;
                 }
-                appointTime = pick.Value.ToString(@"hh\:mm\:ss");
             }
 
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -429,7 +487,7 @@ namespace DocCare_Clinic
                     string details = HttpUtility.HtmlEncode(patientName) + " is booked with <b>" +
                                      HttpUtility.HtmlEncode(ddlConsultDoctor.SelectedItem.Text) + "</b><br/>" +
                                      "Patient ID: <b>" + PatientCode.Of(patientID) + "</b> &nbsp;&middot;&nbsp; " +
-                                     "Time: <b>" + SlotService.Format(appointTimeSpan) + "</b> &nbsp;&middot;&nbsp; Token: <b>" +
+                                     "When: <b>" + (today == DateTime.Today ? "Today" : SlotService.FormatDate(today)) + ", " + SlotService.Format(appointTimeSpan) + "</b> &nbsp;&middot;&nbsp; Token: <b>" +
                                      HttpUtility.HtmlEncode(nextToken) + "</b>";
                     string successScript =
                         "Swal.fire({ icon: 'success', title: 'Appointment Booked!', html: '" + HttpUtility.JavaScriptStringEncode(details) + "'," +

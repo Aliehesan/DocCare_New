@@ -86,8 +86,12 @@
         // Medical record of one visit: what each role may see or change is decided in MedicalRecords
         { "~/Features/Patients/VisitNotes.aspx", AllStaff },
         { "~/Features/Patients/Prescription.aspx", new[] { Admin, Doctor } },
+        // Combining two records of the same person
+        { "~/Features/Patients/MergePatients.aspx", new[] { Admin, Receptionist } },
         // Follow-ups to call about: date, doctor and patient only (doctors see their own patients)
         { "~/Features/Appointments/FollowUps.aspx", AllStaff },
+        // Advances to give back on cancelled appointments
+        { "~/Features/Appointments/Refunds.aspx", new[] { Admin, Receptionist } },
         { "~/Features/Doctors/Doctors.aspx", AllStaff },
         { "~/Features/Doctors/DoctorProfile.aspx", AllStaff },
         { "~/Features/Doctors/DoctorsAppoinment.aspx", AllStaff },

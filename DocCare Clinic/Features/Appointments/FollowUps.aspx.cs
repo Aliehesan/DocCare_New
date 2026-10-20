@@ -74,6 +74,18 @@ namespace DocCare_Clinic
             Bind();
         }
 
+        // Reception / admin book the follow-up at the desk: patient, doctor and date already filled in
+        protected string BookLink(object item)
+        {
+            if (Role == "Doctor") return "";   // doctors do not book (Book Appointment is a front-desk page)
+            DataRowView r = (DataRowView)item;
+            DateTime due = Convert.ToDateTime(r["FollowUpDate"]).Date;
+            if (due > DateTime.Today.AddDays(SlotService.BookingWindowDays)) return "<span class=\"fu-small\">Bookable from " + SlotService.FormatDate(due.AddDays(-SlotService.BookingWindowDays)) + "</span> ";
+            string url = ResolveUrl("~/Features/Appointments/BookAppointment.aspx?patientId=" + r["PatientID"] + "&doctorId=" + r["DoctorID"] +
+                                    "&date=" + (due < DateTime.Today ? DateTime.Today : due).ToString("yyyy-MM-dd"));
+            return "<a class=\"fu-book\" href=\"" + HttpUtility.HtmlAttributeEncode(url) + "\">Book</a>";
+        }
+
         protected string DueBadge(object value)
         {
             DateTime d = Convert.ToDateTime(value).Date;

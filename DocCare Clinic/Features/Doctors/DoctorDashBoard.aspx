@@ -168,7 +168,7 @@
                                 <h4>
                                     <asp:Label ID="lblAppointments" runat="server" CssClass="counter-up"></asp:Label>
                                     <asp:Label ID="lblTotalAppointments" runat="server"></asp:Label>
-                                    <span class="status-green">+60%</span>
+                                    <span class="status-green"><asp:Label ID="lblTodayAppointments" runat="server" /> today</span>
                                 </h4>
                                 <h5>
                                     Appointments</h5>
@@ -188,11 +188,11 @@
                                 <h4>
                                     <asp:Label ID="lblActivePatients" runat="server" CssClass="counter-up"></asp:Label>
                                     <asp:Label ID="lblTotalPatients" runat="server"></asp:Label>
-                                    <span class="status-red">Inactive:
+                                    <span class="status-green">New this month:
                                         <asp:Label ID="lblInactivePatients" runat="server"></asp:Label></span>
                                 </h4>
                                 <h5>
-                                    Patients</h5>
+                                    Patients seen</h5>
                             </div>
                         </div>
                     </div>
@@ -220,6 +220,46 @@
                     </div>
                 </div>
             </div>
+
+            <%-- This doctor's appointments, last 14 days (one measure, one colour, value on each bar) --%>
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-body">
+                    <div class="chart-title"><h4>Your Appointments, Last 14 Days</h4></div>
+                    <p class="doc-chart-note">Booked appointments per day (cancelled not counted).</p>
+                    <div style="position: relative; height: 240px;"><canvas id="doctor14days" aria-label="Your appointments in the last 14 days" role="img"></canvas></div>
+                </div>
+            </div>
         </div>
     </div>
+    <style>.doc-chart-note { font-size: 12px; color: #52514e; margin: -6px 0 8px; }</style>
+    <script src="assets/plugins/chartjs/chart.min.js"></script>
+    <script>
+        function drawDoctor14Days(labels, values) {
+            var canvas = document.getElementById('doctor14days');
+            if (!canvas || typeof Chart === 'undefined') return;
+            var ink = function () { return window.DocCareTheme ? DocCareTheme.ink() : '#52514e'; };   // follows light / dark mode
+            new Chart(canvas, {
+                type: 'bar',
+                data: { labels: labels, datasets: [{ data: values, backgroundColor: '#2a78d6', borderRadius: 4, maxBarThickness: 28 }] },
+                options: {
+                    responsive: true, maintainAspectRatio: false, animation: false,
+                    plugins: { legend: { display: false },
+                               tooltip: { callbacks: { label: function (c) { return ' ' + c.parsed.y + (c.parsed.y === 1 ? ' appointment' : ' appointments'); } } } },
+                    scales: {
+                        x: { ticks: { color: ink(), maxRotation: 0, autoSkip: true }, grid: { display: false, drawBorder: false } },
+                        y: { beginAtZero: true, grace: '12%', ticks: { precision: 0, color: ink() }, grid: { color: window.DocCareTheme ? DocCareTheme.grid() : '#e8e7e3', drawBorder: false } }
+                    }
+                },
+                plugins: [{
+                    id: 'values',
+                    afterDatasetsDraw: function (chart) {
+                        var ctx = chart.ctx; ctx.save(); ctx.fillStyle = ink(); ctx.font = '600 12px Poppins, sans-serif';
+                        ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+                        chart.getDatasetMeta(0).data.forEach(function (bar, i) { var v = values[i]; if (v) ctx.fillText(v, bar.x, bar.y - 4); });
+                        ctx.restore();
+                    }
+                }]
+            });
+        }
+    </script>
 </asp:Content>

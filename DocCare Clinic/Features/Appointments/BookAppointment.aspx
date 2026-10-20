@@ -15,6 +15,18 @@
         .returning-patient { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center;
                              background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; border-radius: 12px; padding: 12px 16px; margin: 0 0 22px; font-size: 14px; }
         .returning-patient a { font-size: 13px; font-weight: 600; color: #2E37A4; }
+        .time-picker { margin: 0 0 20px; }
+        .time-picker-label { font-size: 14px; font-weight: 600; color: #333448; margin-bottom: 8px; }
+        .slot-info { font-size: 13px; font-weight: 500; margin-left: 8px; }
+        .slot-info.ok { color: #047857; }
+        .slot-info.none { color: #b91c1c; }
+        .time-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .time-chips input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; }
+        .time-chips label { display: inline-block; padding: 8px 14px; border-radius: 10px; border: 1.5px solid #c7d2fe; background: #eef2ff;
+                            color: #2E37A4; font-size: 13.5px; font-weight: 600; cursor: pointer; margin: 0; }
+        .time-chips label:hover { border-color: #2E37A4; }
+        .time-chips input[type="radio"]:checked + label { background: #2E37A4; border-color: #2E37A4; color: #fff; }
+        .time-chips input[type="radio"]:focus-visible + label { outline: 2px solid #2E37A4; outline-offset: 2px; }
     </style>
     <div class="page-wrapper">
         <div class="content">
@@ -129,33 +141,33 @@
                                             Appointment Details</h4>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-2">
-                                    <div class="input-block local-forms">
-                                        <label>
-                                            Date of Appointment <span class="login-danger">*</span></label>
-                                        <asp:TextBox ID="txtAppointDate" CssClass="form-control" runat="server" TextMode="Date"
-                                            ReadOnly="true"></asp:TextBox>
-                                    </div>
-                                </div>
-                               <%-- <div class="col-12 col-md-6 col-xl-2">
-                                    <div class="input-block local-forms">
-                                        <label>
-                                            Time <span class="login-danger">*</span></label>
-                                        <asp:TextBox ID="txtAppointTime" runat="server" CssClass="form-control" TextMode="Time" />
-                                    </div>
-                                </div>--%>
                                 <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server">
                                 </asp:ScriptManagerProxy>
+                                <%-- Today (walk-in) or a later day (phone, follow-up): date -> doctors working that day -> free times --%>
                                 <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
-                                        <div class="col-12 col-md-6 col-xl-4">
-                                            <div class="input-block local-forms">
-                                                <label>
-                                                    Consulting Doctor <span class="login-danger">*</span></label>
-                                                <asp:DropDownList ID="ddlConsultDoctor" runat="server" CssClass="form-control select"
-                                                    AutoPostBack="true" OnSelectedIndexChanged="ddlConsultDoctor_SelectedIndexChanged">
-                                                </asp:DropDownList>
-                                                <asp:Label ID="lblSlotInfo" runat="server" Style="display:block; margin-top:6px; font-weight:600;"></asp:Label>
+                                        <div class="row">
+                                            <div class="col-12 col-md-4 col-xl-3">
+                                                <div class="input-block local-forms">
+                                                    <label>Date of Appointment <span class="login-danger">*</span></label>
+                                                    <asp:TextBox ID="txtAppointDate" CssClass="form-control" runat="server" TextMode="Date"
+                                                        AutoPostBack="true" OnTextChanged="txtAppointDate_TextChanged"></asp:TextBox>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-8 col-xl-5">
+                                                <div class="input-block local-forms">
+                                                    <label>Consulting Doctor <span class="login-danger">*</span></label>
+                                                    <asp:DropDownList ID="ddlConsultDoctor" runat="server" CssClass="form-control select"
+                                                        AutoPostBack="true" OnSelectedIndexChanged="ddlConsultDoctor_SelectedIndexChanged">
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="time-picker">
+                                                    <div class="time-picker-label">Time <span class="login-danger">*</span>
+                                                        <asp:Label ID="lblSlotInfo" runat="server" CssClass="slot-info"></asp:Label></div>
+                                                    <asp:RadioButtonList ID="rblTime" runat="server" RepeatLayout="Flow" RepeatDirection="Horizontal" CssClass="time-chips" />
+                                                </div>
                                             </div>
                                         </div>
                                     </ContentTemplate>

@@ -19,6 +19,9 @@
         .fu-badge.soon { background: #eef2ff; color: #2E37A4; }
         .fu-small { display: block; font-size: 12px; color: #6b7280; }
         .fu-done { font-size: 13px; font-weight: 600; color: #b91c1c !important; white-space: nowrap; }
+        .fu-actions { white-space: nowrap; }
+        .fu-book { display: inline-block; margin-right: 10px; padding: 5px 12px; border-radius: 8px; background: #2E37A4; color: #fff !important;
+                   font-size: 12.5px; font-weight: 600; text-decoration: none; }
         .fu-empty { padding: 26px 12px; text-align: center; color: #6b7280; }
     </style>
 </asp:Content>
@@ -68,7 +71,8 @@
                                                 <span class="fu-small"><%# HttpUtility.HtmlEncode(Eval("Specialization")) %></span></td>
                                             <td><%# Eval("VisitDate", "{0:dd MMM yyyy}") %></td>
                                             <td><%# ReminderText(Container.DataItem) %></td>
-                                            <td><asp:LinkButton ID="lnkClose" runat="server" CssClass="fu-done" CommandName="Close" CommandArgument='<%# Eval("AppointmentID") %>'
+                                            <td class="fu-actions"><%# BookLink(Container.DataItem) %>
+                                                <asp:LinkButton ID="lnkClose" runat="server" CssClass="fu-done" CommandName="Close" CommandArgument='<%# Eval("AppointmentID") %>'
                                                     OnClientClick="return confirm('Remove this follow-up from the list? Use this when it is no longer needed (for example the patient declined).');"
                                                     ToolTip="The follow-up is no longer needed">Not needed</asp:LinkButton></td>
                                         </tr>

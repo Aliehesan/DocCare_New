@@ -128,6 +128,8 @@ namespace DocCare_Clinic {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSlotInfo;
+
+        protected global::System.Web.UI.WebControls.RadioButtonList rblTime;
         
         /// <summary>
         /// btnSubmit control.

@@ -33,6 +33,7 @@ namespace DocCare_Clinic
                     LoadAppointmentData();
                     LoadPatientData();
                     LoadEarnings();
+                    LoadLast14Days();
                     HideAdminMenus();
                 }
             }
@@ -84,9 +85,10 @@ namespace DocCare_Clinic
 
                     // Query to count completed appointments and total appointments
                     string query = @"
-                    SELECT 
+                    SELECT
                         COUNT(CASE WHEN Status = 'Completed' THEN 1 END) AS CompletedAppointments,
-                        COUNT(*) AS TotalAppointments
+                        COUNT(CASE WHEN Status <> 'Cancelled' THEN 1 END) AS TotalAppointments,
+                        COUNT(CASE WHEN Status <> 'Cancelled' AND AppointDate = CAST(GETDATE() AS DATE) THEN 1 END) AS TodayAppointments
                     FROM Appointments
                     WHERE DoctorID = @DoctorID";
 
@@ -102,6 +104,7 @@ namespace DocCare_Clinic
 
                                 lblAppointments.Text = completedAppointments.ToString();
                                 lblTotalAppointments.Text = "/" + totalAppointments.ToString();
+                                lblTodayAppointments.Text = reader["TodayAppointments"].ToString();
                             }
                         }
                     }
@@ -126,11 +129,16 @@ namespace DocCare_Clinic
                     int doctorId = Convert.ToInt32(Session["DoctorID"]);
 
                     string query = @"
-                    SELECT 
-                        COUNT(CASE WHEN Status = 'Active' THEN 1 END) AS ActivePatients,
-                        COUNT(*) AS TotalPatients
-                    FROM Patients
-                    WHERE DoctorID = @DoctorID";
+                    -- patients seen (a completed visit) out of all patients booked with this doctor,
+                    -- and how many came to this doctor for the first time this month
+                    SELECT
+                        COUNT(DISTINCT CASE WHEN Status = 'Completed' THEN PatientID END) AS ActivePatients,
+                        COUNT(DISTINCT PatientID) AS TotalPatients,
+                        (SELECT COUNT(*) FROM (SELECT PatientID, MIN(AppointDate) AS FirstVisit FROM Appointments
+                                               WHERE DoctorID = @DoctorID AND Status <> 'Cancelled' GROUP BY PatientID) f
+                         WHERE f.FirstVisit >= DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1) AND f.FirstVisit <= CAST(GETDATE() AS DATE)) AS NewThisMonth
+                    FROM Appointments
+                    WHERE DoctorID = @DoctorID AND Status <> 'Cancelled'";
 
                     using (SqlCommand cmd = new SqlCommand(query, con))
                     {
@@ -142,11 +150,10 @@ namespace DocCare_Clinic
                             {
                                 int activePatients = Convert.ToInt32(reader["ActivePatients"]);
                                 int totalPatients = Convert.ToInt32(reader["TotalPatients"]);
-                                int inactivePatients = totalPatients - activePatients;
 
                                 lblActivePatients.Text = activePatients.ToString();
                                 lblTotalPatients.Text = "/" + totalPatients.ToString();
-                                lblInactivePatients.Text = inactivePatients.ToString();
+                                lblInactivePatients.Text = reader["NewThisMonth"].ToString();   // shown as "New this month"
                             }
                         }
                     }
@@ -158,6 +165,34 @@ namespace DocCare_Clinic
                     lblInactivePatients.Text = "Error";
                 }
             }
+        }
+
+        // Booked appointments per day for this doctor, last 14 days (zeros filled in)
+        private void LoadLast14Days()
+        {
+            var perDay = new Dictionary<DateTime, int>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT AppointDate, COUNT(*) AS N FROM Appointments
+                WHERE DoctorID = @DoctorID AND Status <> 'Cancelled'
+                  AND AppointDate > DATEADD(DAY, -14, CAST(GETDATE() AS DATE)) AND AppointDate <= CAST(GETDATE() AS DATE)
+                GROUP BY AppointDate", con))
+            {
+                cmd.Parameters.AddWithValue("@DoctorID", Session["DoctorID"].ToString());
+                con.Open();
+                using (SqlDataReader r = cmd.ExecuteReader())
+                    while (r.Read()) perDay[Convert.ToDateTime(r["AppointDate"]).Date] = Convert.ToInt32(r["N"]);
+            }
+            var labels = new List<string>();
+            var values = new List<int>();
+            for (DateTime d = DateTime.Today.AddDays(-13); d <= DateTime.Today; d = d.AddDays(1))
+            {
+                labels.Add(d.ToString("dd MMM", System.Globalization.CultureInfo.InvariantCulture));
+                values.Add(perDay.ContainsKey(d) ? perDay[d] : 0);
+            }
+            var json = new System.Web.Script.Serialization.JavaScriptSerializer();
+            ClientScript.RegisterStartupScript(GetType(), "doctor14",
+                "window.addEventListener('load', function () { drawDoctor14Days(" + json.Serialize(labels) + ", " + json.Serialize(values) + "); });", true);
         }
 
         private void LoadEarnings()
@@ -173,16 +208,16 @@ namespace DocCare_Clinic
 
                     // ✅ Define the queries **before using them**
                     string totalEarningsQuery = @"
-                    SELECT SUM(D.Charges) AS TotalEarnings
+                    SELECT SUM(COALESCE(A.TotalFee, D.Charges)) AS TotalEarnings   -- the fee charged at the time
                     FROM Appointments A
                     INNER JOIN Doctors D ON A.DoctorID = D.DoctorID
                     WHERE A.Status = 'Completed' AND A.DoctorID = @DoctorID";
 
                     string todayEarningsQuery = @"
-                    SELECT SUM(D.Charges) AS TodayEarnings
+                    SELECT SUM(COALESCE(A.TotalFee, D.Charges)) AS TodayEarnings
                     FROM Appointments A
                     INNER JOIN Doctors D ON A.DoctorID = D.DoctorID
-                    WHERE A.Status = 'Completed' AND A.DoctorID = @DoctorID 
+                    WHERE A.Status = 'Completed' AND A.DoctorID = @DoctorID
                     AND CAST(A.AppointDate AS DATE) = CAST(GETDATE() AS DATE)";
 
                     // ✅ Use the queries inside the same method

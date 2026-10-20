@@ -29,6 +29,8 @@ namespace DocCare_Clinic {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTotalAppointments;
+
+        protected global::System.Web.UI.WebControls.Label lblTodayAppointments;
         
         /// <summary>
         /// lblActivePatients control.

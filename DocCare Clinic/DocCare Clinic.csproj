@@ -856,9 +856,11 @@
     <Content Include="Features\Appointments\MyAppointment.aspx" />
     <Content Include="Features\Appointments\Reschedule.aspx" />
     <Content Include="Features\Appointments\FollowUps.aspx" />
+    <Content Include="Features\Appointments\Refunds.aspx" />
     <Content Include="Features\Patients\PatientProfile.aspx" />
     <Content Include="Features\Patients\VisitNotes.aspx" />
     <Content Include="Features\Patients\Prescription.aspx" />
+    <Content Include="Features\Patients\MergePatients.aspx" />
     <Content Include="Features\Patients\Patients.aspx" />
     <Content Include="Features\Receptionists\Receptionist.aspx" />
     <Content Include="Features\Receptionists\ReceptionistDashboard.aspx" />
@@ -1246,6 +1248,22 @@
     <Compile Include="webConfig\PatientCode.cs" />
     <Compile Include="webConfig\MedicalRecords.cs" />
     <Compile Include="webConfig\SiteAddress.cs" />
+    <Compile Include="webConfig\Refunds.cs" />
+    <Compile Include="webConfig\PatientMerge.cs" />
+    <Compile Include="Features\Patients\MergePatients.aspx.cs">
+      <DependentUpon>MergePatients.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Patients\MergePatients.aspx.designer.cs">
+      <DependentUpon>MergePatients.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Appointments\Refunds.aspx.cs">
+      <DependentUpon>Refunds.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Features\Appointments\Refunds.aspx.designer.cs">
+      <DependentUpon>Refunds.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Features\Appointments\FollowUps.aspx.cs">
       <DependentUpon>FollowUps.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

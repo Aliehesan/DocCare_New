@@ -130,7 +130,7 @@ namespace DocCare_Clinic
                         COALESCE(d.Specialization, 'Not Available') AS Specialization,
                         COALESCE(a.TotalFee, d.Charges, 0) AS Fee,
                         CASE WHEN a.TotalFee IS NULL THEN 1 ELSE 0 END AS FeeEstimated,
-                        ISNULL(a.PaidAmount, 0) AS PaidAmount,
+                        ISNULL(a.PaidAmount, 0) AS PaidAmount, a.RefundedAt,
                         CASE WHEN a.TotalFee IS NULL THEN COALESCE(d.Charges, 0) ELSE ISNULL(a.DueAmount, 0) END AS DueAmount,
                         a.DeletedAt
                     FROM Appointments a
@@ -195,7 +195,7 @@ namespace DocCare_Clinic
         private void BindSummary(DataTable dt)
         {
             int total = dt.Rows.Count, completed = 0, upcoming = 0, cancelled = 0, noShow = 0, online = 0;
-            decimal revenue = 0, advance = 0, advanceCancelled = 0;
+            decimal revenue = 0, advance = 0, advanceCancelled = 0, refunded = 0;
             var doctors = new SortedDictionary<string, decimal[]>(); // total, completed, upcoming, cancelled, revenue, no show
 
             foreach (DataRow r in dt.Rows)
@@ -211,7 +211,11 @@ namespace DocCare_Clinic
                 advance += paid;
 
                 if (status == AppointmentStatus.Completed) { completed++; revenue += fee; s[1]++; s[4] += fee; }
-                else if (status == AppointmentStatus.Cancelled) { cancelled++; advanceCancelled += paid; s[3]++; }
+                else if (status == AppointmentStatus.Cancelled)
+                {
+                    cancelled++; s[3]++;
+                    if (r["RefundedAt"] == DBNull.Value) advanceCancelled += paid; else refunded += paid;
+                }
                 else if (status == AppointmentStatus.NoShow) { noShow++; s[5]++; }
                 else { upcoming++; s[2]++; }
             }
@@ -225,7 +229,11 @@ namespace DocCare_Clinic
             litNoShow.Text = noShow.ToString();
             litRevenue.Text = Money(revenue);
             litAdvance.Text = Money(advance);
-            litAdvanceSub.Text = advanceCancelled > 0 ? "incl. " + Money(advanceCancelled) + " on cancelled (refund due)" : "20% paid at booking";
+            // refunds (Refunds page): what is still to be given back, and what already was
+            litAdvanceSub.Text = advanceCancelled > 0 || refunded > 0
+                ? (advanceCancelled > 0 ? Money(advanceCancelled) + " refund due" : "") + (advanceCancelled > 0 && refunded > 0 ? " &middot; " : "") +
+                  (refunded > 0 ? Money(refunded) + " refunded" : "")
+                : "20% paid at booking";
 
             DataTable summary = new DataTable();
             summary.Columns.Add("Doctor"); summary.Columns.Add("Total"); summary.Columns.Add("Completed");

@@ -13,7 +13,7 @@ Follow-ups the doctor advises are shown to the patient with a booking link, emai
 | Role | Can |
 |---|---|
 | Admin | Dashboard, doctors, receptionists, departments, all appointments, Appointment Report |
-| Receptionist | Walk-in booking, appointments, patients, doctors' hours and leave, report |
+| Receptionist | Bookings at the desk (today or any day), appointments, patients, follow-ups, refunds, doctors' hours and leave, report |
 | Doctor | Own appointments and patients, own working hours and leave |
 | Patient | Book, reschedule or cancel online, family members, appointment history |
 
@@ -22,20 +22,18 @@ Follow-ups the doctor advises are shown to the patient with a booking link, emai
 1. Open `DocCare Clinic.sln` in Visual Studio 2022.
 2. **Secrets:** copy `DocCare Clinic/Secrets.example.config` to `DocCare Clinic/Secrets.config` and fill in
    the Gmail app password and the Razorpay keys. `Secrets.config` is ignored by git.
-3. **Database:** the database file is not in the repository (it holds patient data). Put `DocCare.mdf` in
-   `DocCare Clinic/App_Data/`, then run these scripts against it, in order (each one is safe to run again):
-   - `add_booked_by_columns.sql`
-   - `add_notified_at_column.sql`
-   - `add_appointment_deleted_at_column.sql`
-   - `add_working_hours_and_leave.sql`
-   - `normalize_doctor_names.sql`
-   - `add_reminder_sent_at_column.sql`
-   - `add_patient_code.sql`
-   - `add_medical_records.sql`
-
-   ```
-   sqlcmd -S "(LocalDb)\MSSQLLocalDB" -E -I -d "<full path to DocCare.mdf>" -i add_patient_code.sql
-   ```
+3. **Database** (the database file is not in the repository: it holds patient data).
+   - **New installation:** create an empty database (for example `DocCare.mdf` in `DocCare Clinic/App_Data/`),
+     run `create_database.sql` (all tables, keys, indexes and stored procedures, no data), then edit the email,
+     name and password at the top of `seed_admin.sql` and run it to create the first admin account.
+     ```
+     sqlcmd -S "(LocalDb)\MSSQLLocalDB" -E -I -d "<full path to DocCare.mdf>" -i create_database.sql
+     sqlcmd -S "(LocalDb)\MSSQLLocalDB" -E -I -d "<full path to DocCare.mdf>" -i seed_admin.sql
+     ```
+   - **Existing database from before these changes:** run these scripts against it, in order (each one is safe to run again):
+     `add_booked_by_columns.sql`, `add_notified_at_column.sql`, `add_appointment_deleted_at_column.sql`,
+     `add_working_hours_and_leave.sql`, `normalize_doctor_names.sql`, `add_reminder_sent_at_column.sql`,
+     `add_patient_code.sql`, `add_medical_records.sql`, `add_refunds.sql`, `add_patient_merge.sql`.
 4. Run with IIS Express (F5).
 
 Optional: add `<add key="SiteUrl" value="https://your-clinic-address" />` to `Secrets.config` (or Web.config

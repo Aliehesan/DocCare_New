@@ -282,3 +282,30 @@ html[data-theme="dark"] .day-summary .sum-range { color: var(--dm-text) !importa
 html[data-theme="dark"] .day-summary .sum-note { color: var(--dm-muted) !important; }
 html[data-theme="dark"] .sum-pill.booked { background: #1d2240 !important; color: var(--dm-link) !important; }
 html[data-theme="dark"] .sum-pill.free { background: var(--dm-raised) !important; color: var(--dm-text) !important; }
+html[data-theme="dark"] .fu-book { background: var(--dm-primary) !important; color: #fff !important; }
+html[data-theme="dark"] .time-chips label { background: var(--dm-raised) !important; border-color: var(--dm-border) !important; color: var(--dm-link) !important; }
+html[data-theme="dark"] .time-chips input[type="radio"]:checked + label { background: var(--dm-primary) !important; border-color: var(--dm-primary) !important; color: #fff !important; }
+html[data-theme="dark"] .time-picker-label { color: var(--dm-text) !important; }
+html[data-theme="dark"] .slot-info.ok { color: #6ee7b7 !important; }
+html[data-theme="dark"] .slot-info.none { color: #fca5a5 !important; }
+
+/* Refunds */
+html[data-theme="dark"] .rf-chip { background: var(--dm-raised) !important; border-color: var(--dm-border) !important; color: var(--dm-link) !important; }
+html[data-theme="dark"] .rf-chip.active { background: var(--dm-primary) !important; border-color: var(--dm-primary) !important; color: #fff !important; }
+html[data-theme="dark"] .rf-note, html[data-theme="dark"] .rf-total, html[data-theme="dark"] .rf-small, html[data-theme="dark"] .rf-ref, html[data-theme="dark"] .rf-empty { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .rf-total strong { color: #fcd34d !important; }
+html[data-theme="dark"] .rf-amount { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .rf-table th { color: var(--dm-muted) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .rf-table td { border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .rf-done { color: #6ee7b7 !important; }
+
+/* Merge duplicates */
+html[data-theme="dark"] .mg-card { background: var(--dm-surface) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .mg-card.keep { border-color: #1f5c43 !important; background: #10201a !important; }
+html[data-theme="dark"] .mg-card.dup { border-color: #5c4714 !important; background: #211b0d !important; }
+html[data-theme="dark"] .mg-card .name, html[data-theme="dark"] .mg-card dd, html[data-theme="dark"] .mg-section { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .mg-card dt, html[data-theme="dark"] .mg-note, html[data-theme="dark"] .mg-none, html[data-theme="dark"] .mg-suggest .why { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .mg-suggest { border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .mg-explain { background: var(--dm-raised) !important; border-color: var(--dm-border) !important; color: var(--dm-text) !important; }
+html[data-theme="dark"] .mg-problem { background: #2b1416 !important; border-color: #6b2228 !important; color: #fecaca !important; }
+html[data-theme="dark"] .mg-pick .field label { color: var(--dm-text) !important; }

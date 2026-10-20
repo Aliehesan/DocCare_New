@@ -18,6 +18,7 @@ namespace DocCare_Clinic
         {
             // Search as you type, keeping the cursor and what was typed (assets/js/doccare-search.js)
             txtSearch.Attributes["data-live-search"] = btnHiddenSearch.UniqueID;
+            lnkMerge.Visible = (Session["UserRole"] as string) != "Doctor";   // merging is for the front desk and admin
             if (!IsPostBack)
             {
                 string userRole = Session["UserRole"] as string;
