@@ -41,82 +41,45 @@
 };
 
     </script>
-    <script type="text/javascript">
-        function SearchPatients() {
-            clearTimeout(window.searchTimeout);
-            window.searchTimeout = setTimeout(function () {
-                __doPostBack('<%= btnHiddenSearch.UniqueID %>', '');
-            }, 500); // Delay search by 500ms to avoid excessive postbacks
-        }
-    </script>
     <style>
-        .pagination
-        {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .pagination a, .pagination span
-        {
-            color: #6c757d;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 6px 12px;
-            margin: 0 2px;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .pagination a:hover
-        {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-        .pagination .current
-        {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-        .pagination a:disabled
-        {
-            background-color: #e9ecef;
-            color: #6c757d;
-            border-color: #dee2e6;
-            cursor: not-allowed;
-        }
-        
-        .status-blue
-        {
-            color: white;
-            background-color: #007bff; /* Blue */
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-        
-        .status-green
-        {
-            color: white;
-            background-color: #28a745; /* Green */
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-        
-        .status-red
-        {
-            color: white;
-            background-color: #dc3545; /* Red */
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-        
-        .status-default
-        {
-            color: black;
-            background-color: #f8f9fa; /* Light Gray */
-            padding: 5px 10px;
-            border-radius: 5px;
-        }        
+        .day-list { padding: 0 20px 20px; }
+        .day-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 2px 0 14px; }
+        .day-summary .sum-range { font-size: 13.5px; color: #4b5563; margin-right: 4px; }
+        .day-summary .sum-note { color: #9ca3af; font-size: 12.5px; }
+        .sum-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+        .sum-pill.booked { background: #eef2ff; color: #2E37A4; }
+        .sum-pill.free { background: #f3f4f8; color: #4b5563; }
+        .sum-pill i { font-size: 12px; }
+        @media (max-width: 767px) { .day-list { padding: 0 12px 12px; } }
+        .day-card { border: 1px solid #e8eaf3; border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; background: #fff; }
+        .day-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+        .day-title { font-size: 15px; font-weight: 700; color: #111827; }
+        .today-badge { display: inline-block; margin-left: 6px; padding: 2px 9px; border-radius: 10px; font-size: 11.5px; font-weight: 600; background: #2E37A4; color: #fff; vertical-align: 1px; }
+        .day-counts { font-size: 13px; color: #6b7280; }
+        .day-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .day-table th { font-size: 12px; font-weight: 600; color: #6b7280; text-align: left; padding: 8px 10px; border-bottom: 1px solid #eef0f6; white-space: nowrap; }
+        .day-table td { padding: 10px; border-bottom: 1px solid #f3f4f8; vertical-align: middle; }
+        .day-table tr:last-child td { border-bottom: 0; }
+        .day-time { white-space: nowrap; font-weight: 600; color: #111827; }
+        .day-token { white-space: nowrap; color: #4b5563; }
+        .day-table tr.off-hours td { background: #fff7ed; }
+        .off-hours-badge { display: block; font-size: 11px; font-weight: 600; color: #b45309; margin-top: 2px; }
+        .notify-btn { white-space: nowrap; }
+        .notified-text { display: block; font-size: 12px; color: #047857; margin-top: 4px; }
+        .notified-text.muted { color: #9ca3af; margin-top: 0; }
+        .day-empty { font-size: 13.5px; color: #6b7280; padding: 4px 2px 8px; }
+        .day-free { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-top: 10px; margin-top: 4px; border-top: 1px dashed #e5e7eb; }
+        .day-free.none { font-size: 13px; color: #9ca3af; }
+        .day-free-label { font-size: 12px; font-weight: 600; color: #6b7280; margin-right: 4px; }
+        .free-chip { font-size: 12px; padding: 3px 9px; border-radius: 8px; background: #f3f4f8; color: #4b5563; white-space: nowrap; }
+        .day-none { color: #6b7280; font-size: 14px; text-align: center; padding: 26px; }
+        /* status badges (same colours as the Appointment Report) */
+        .st-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+        .st-Pending { background: #f3f4f6; color: #4b5563; }
+        .st-Confirmed { background: #dbeafe; color: #1d4ed8; }
+        .st-Completed { background: #d1fae5; color: #047857; }
+        .st-NoShow { background: #e5e7eb; color: #374151; }
+        @media (max-width: 767px) { .day-table th:nth-child(2), .day-table td:nth-child(2) { display: none; } }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -149,7 +112,7 @@
                                                         Appointment List</h3>
                                                     <div class="top-nav-search table-search-blk">
                                                         <asp:TextBox ID="txtSearch" CssClass="form-control" runat="server" Placeholder="Patient name or Patient ID"
-                                                            AutoPostBack="false" onkeyup="SearchPatients()" ClientIDMode="Static"></asp:TextBox>
+                                                            AutoPostBack="false" ClientIDMode="Static" autocomplete="off"></asp:TextBox>
                                                         <asp:Button ID="btnHiddenSearch" runat="server" Style="display: none;" OnClick="txtSearch_TextChanged" />
                                                         <div style="display: inline-block; margin-top: -33px; margin-left: 10px;">
                                                             <svg width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -179,43 +142,47 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <asp:Label ID="lblShowing" runat="server" CssClass="showing-label"></asp:Label>
-                                    <div class="table-responsive">
-                                        <asp:GridView ID="gvDoctorAppointments" CssClass="table border-0 custom-table comman-table datatable mb-0"
-                                            runat="server" AutoGenerateColumns="False" EmptyDataText="No Record Found" AllowPaging="true"
-                                            PageSize="10" OnPageIndexChanging="gvDoctorAppointments_PageIndexChanging" OnRowDataBound="gvDoctorAppointments_RowDataBound">
-                                            <Columns>
-                                                <asp:BoundField DataField="AppointmentID" HeaderText="ID" />
-                                                <asp:TemplateField HeaderText="Patient Name">
+                                    <div class="day-list">
+                                    <%-- What is shown, with the counts as badges --%>
+                                    <asp:Literal ID="litSummary" runat="server" />
+                                    <%-- One card per day: its appointments, then its free times on one line --%>
+                                    <asp:Repeater ID="rptDays" runat="server" OnItemDataBound="rptDays_ItemDataBound">
+                                        <ItemTemplate>
+                                            <div class="day-card">
+                                                <div class="day-head">
+                                                    <div class="day-title"><%# Eval("Title") %><%# (bool)Eval("IsToday") ? " <span class=\"today-badge\">Today</span>" : "" %></div>
+                                                    <div class="day-counts"><%# Eval("Counts") %></div>
+                                                </div>
+                                                <asp:Repeater ID="rptBooked" runat="server" OnItemDataBound="rptBooked_ItemDataBound">
+                                                    <HeaderTemplate>
+                                                        <div class="table-responsive"><table class="day-table">
+                                                            <thead><tr><th>Time</th><th>Token</th><th>Patient</th><th>Status</th><th>Notify</th></tr></thead><tbody>
+                                                    </HeaderTemplate>
                                                     <ItemTemplate>
-                                                        <%# HttpUtility.HtmlEncode(Eval("PatientName")) %>
-                                                        <span class="patient-code"><%# Eval("PatientCode") %></span>
+                                                        <tr class='<%# IsOffHours(Eval("TimeSlot")) ? "off-hours" : "" %>'>
+                                                            <td class="day-time"><%# TimeText(Eval("TimeSlot")) %>
+                                                                <%# IsOffHours(Eval("TimeSlot")) ? "<span class=\"off-hours-badge\" title=\"Booked before the working hours changed; the appointment was kept at its time\">Outside working hours</span>" : "" %></td>
+                                                            <td class="day-token"><%# HttpUtility.HtmlEncode(Eval("TokenNo")) %></td>
+                                                            <td><strong><%# HttpUtility.HtmlEncode(Eval("PatientName")) %></strong>
+                                                                <span class="patient-code"><%# Eval("PatientCode") %></span></td>
+                                                            <td><%# StatusBadge(Eval("Status")) %></td>
+                                                            <td>
+                                                                <asp:Button ID="btnNotify" runat="server" Text="Notify Patient" CssClass="btn btn-outline-primary btn-sm notify-btn"
+                                                                    CommandArgument='<%# Eval("AppointmentID") %>' OnClick="NotifyPatient_Click" />
+                                                                <asp:Label ID="lblNotified" runat="server" Visible="false" CssClass="notified-text"></asp:Label>
+                                                            </td>
+                                                        </tr>
                                                     </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Date">
-                                                    <ItemTemplate>
-                                                        <%# Convert.ToDateTime(Eval("AppointDate")).ToString("dd-MMM-yyyy") %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="TimeSlot" HeaderText="Time Slot" />
-                                                <asp:TemplateField HeaderText="Status">
-                                                    <ItemTemplate>
-                                                        <span class='<%# GetStatusCssClass(Eval("Status").ToString()) %>'>
-                                                            <%# Eval("Status") %>
-                                                        </span>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Actions">
-                                                    <ItemTemplate>
-                                                        <asp:Button ID="btnNotify" runat="server" Text="Notify Patient" CssClass="btn btn-warning"
-                                                            CommandArgument='<%# Eval("AppointmentID") %>' OnClick="NotifyPatient_Click" />
-                                                        <asp:Label ID="lblNotified" runat="server" Visible="false"
-                                                            Style="display:block;font-size:12px;color:#047857;margin-top:5px;"></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                            <PagerStyle CssClass="pagination" />
-                                        </asp:GridView>
+                                                    <FooterTemplate></tbody></table></div></FooterTemplate>
+                                                </asp:Repeater>
+                                                <%# Eval("EmptyHtml") %>
+                                                <%# Eval("FreeHtml") %>
+                                            </div>
+                                        </ItemTemplate>
+                                    </asp:Repeater>
+                                    <asp:Panel ID="pnlNoDays" runat="server" Visible="false" CssClass="day-card day-none">
+                                        <asp:Literal ID="litNoDays" runat="server" />
+                                    </asp:Panel>
                                     </div>
                                 </div>
                             </div>

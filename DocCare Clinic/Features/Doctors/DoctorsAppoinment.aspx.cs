@@ -17,6 +17,8 @@ namespace DocCare_Clinic
         string connectionString = ConfigurationManager.ConnectionStrings["DocCareDB"].ConnectionString;
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Search as you type, keeping the cursor and what was typed (assets/js/doccare-search.js)
+            txtSearch.Attributes["data-live-search"] = btnHiddenSearch.UniqueID;
             if (!IsPostBack)
             {
                 string userRole = Session["UserRole"] as string;
@@ -30,23 +32,6 @@ namespace DocCare_Clinic
                     HideAdminMenus();
                     BindDoctorAppointments("");
                 }
-            }
-        }
-
-        protected string GetStatusCssClass(string status)
-        {
-            switch (status.ToLower())
-            {
-                case "confirmed":
-                    return "status-blue"; // Blue color for Booked
-                case "completed":
-                    return "status-green"; // Green color for Complete
-                case "cancelled":
-                    return "status-red"; // Red color for Cancelled
-                case "no show":
-                    return "status-gray"; // Grey for No Show
-                default:
-                    return "status-default"; // Default color for other statuses
             }
         }
 
@@ -112,7 +97,7 @@ namespace DocCare_Clinic
             SELECT dd.D AS AppointDate, w.StartTime, w.EndTime, w.SlotDuration, w.BreakStart, w.BreakEnd, 
                    ISNULL(a.ID, '-') AS AppointmentID, ISNULL(a.AppointTime, '') AS AppointTime,
                    ISNULL(a.Status, 'Not Booked') AS Status, 
-                   ISNULL(p.PatientName, 'N/A') AS PatientName, p.PatientCode,
+                   ISNULL(p.PatientName, 'N/A') AS PatientName, p.PatientCode, a.TokenNo,
                    a.NotifiedAt,
                    COALESCE(NULLIF(u.Email, ''), NULLIF(pu.Email, ''), NULLIF(p.Email, ''), '') AS PatientEmail
             FROM Days dd
@@ -147,16 +132,14 @@ namespace DocCare_Clinic
                     cmd.Parameters.Add("@FilterDate", SqlDbType.Date).Value = oneDay ? (object)filterDate.Date : DBNull.Value;
 
                     // What the grid shows, and why a chosen day can be empty
-                    lblShowing.Text = oneDay ? "Showing " + SlotService.FormatDate(filterDate)
-                                             : "Showing the next 7 days, plus later days that have bookings";
-                    gvDoctorAppointments.EmptyDataText = "No Record Found";
+                    string emptyReason = null;
                     int doctor;
                     if (oneDay && int.TryParse(doctorId, out doctor))
                         using (SqlConnection hc = new SqlConnection(connectionString))
                         {
                             hc.Open();
                             SlotService.DayHours h = SlotService.GetDayHours(hc, doctor, filterDate);
-                            if (!h.Working) gvDoctorAppointments.EmptyDataText = h.NotWorkingReason;
+                            if (!h.Working) emptyReason = h.NotWorkingReason;
                         }
                     if (!string.IsNullOrEmpty(searchKeyword))
                     {
@@ -173,6 +156,7 @@ namespace DocCare_Clinic
                     allSlotsTable.Columns.Add("AppointmentID", typeof(string));
                     allSlotsTable.Columns.Add("PatientName", typeof(string));
                     allSlotsTable.Columns.Add("PatientCode", typeof(string));
+                    allSlotsTable.Columns.Add("TokenNo", typeof(string));
                     allSlotsTable.Columns.Add("AppointDate", typeof(string));
                     allSlotsTable.Columns.Add("TimeSlot", typeof(string));
                     allSlotsTable.Columns.Add("Status", typeof(string));
@@ -182,8 +166,13 @@ namespace DocCare_Clinic
 
                     // Patient ID per booked appointment, filled in after the slots are built
                     var codes = new Dictionary<string, string>();
+                    var tokens = new Dictionary<string, string>();
                     foreach (DataRow row in dt.Rows)
-                        if (row["AppointmentID"].ToString() != "-") codes[row["AppointmentID"].ToString()] = row["PatientCode"].ToString();
+                        if (row["AppointmentID"].ToString() != "-")
+                        {
+                            codes[row["AppointmentID"].ToString()] = row["PatientCode"].ToString();
+                            tokens[row["AppointmentID"].ToString()] = row["TokenNo"].ToString();
+                        }
 
                     foreach (DataRow row in dt.Rows)
                     {
@@ -205,15 +194,15 @@ namespace DocCare_Clinic
 
                     foreach (DataRow slot in allSlotsTable.Rows)
                     {
-                        string code;
+                        string code, token;
                         slot["PatientCode"] = codes.TryGetValue(slot["AppointmentID"].ToString(), out code) ? code : "";
+                        slot["TokenNo"] = tokens.TryGetValue(slot["AppointmentID"].ToString(), out token) ? token : "";
                     }
                     AddOffHoursBookings(allSlotsTable, doctorId, oneDay ? filterDate.Date : (DateTime?)null, searchKeyword);
                     allSlotsTable.DefaultView.Sort = "SortKey";
                     allSlotsTable = allSlotsTable.DefaultView.ToTable();
 
-                    gvDoctorAppointments.DataSource = allSlotsTable;
-                    gvDoctorAppointments.DataBind();
+                    BindDays(allSlotsTable, !string.IsNullOrEmpty(searchKeyword), searchKeyword, oneDay, emptyReason);
                 }
             }
         }
@@ -288,7 +277,7 @@ namespace DocCare_Clinic
                 .Select(r => r["AppointmentID"].ToString()).Where(id => id != "-"));
 
             string query = @"
-                SELECT a.ID, a.AppointDate, a.AppointTime, a.Status, a.NotifiedAt, ISNULL(p.PatientName, 'N/A') AS PatientName, p.PatientCode,
+                SELECT a.ID, a.AppointDate, a.AppointTime, a.Status, a.NotifiedAt, ISNULL(p.PatientName, 'N/A') AS PatientName, p.PatientCode, a.TokenNo,
                        COALESCE(NULLIF(u.Email, ''), NULLIF(pu.Email, ''), NULLIF(p.Email, ''), '') AS PatientEmail
                 FROM Appointments a
                 LEFT JOIN Patients p ON a.PatientID = p.PatientID
@@ -321,6 +310,7 @@ namespace DocCare_Clinic
                         row["AppointmentID"] = r["ID"].ToString();
                         row["PatientName"] = r["PatientName"].ToString();
                         row["PatientCode"] = r["PatientCode"].ToString();
+                        row["TokenNo"] = r["TokenNo"].ToString();
                         row["AppointDate"] = date;
                         row["TimeSlot"] = SlotService.Format(time) + " (" + OffHoursLabel + ")";
                         row["Status"] = r["Status"].ToString();
@@ -367,70 +357,132 @@ namespace DocCare_Clinic
 
         protected void txtFilterDate_TextChanged(object sender, EventArgs e)
         {
-            gvDoctorAppointments.PageIndex = 0;
             BindDoctorAppointments(txtSearch.Text.Trim());
         }
 
         protected void lnkNext7Days_Click(object sender, EventArgs e)
         {
             txtFilterDate.Text = "";
-            gvDoctorAppointments.PageIndex = 0;
             BindDoctorAppointments(txtSearch.Text.Trim());
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-
-            string searchKeyword = txtSearch.Text.Trim();
-            BindDoctorAppointments(searchKeyword);
-        }
-
-        protected void gvDoctorAppointments_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvDoctorAppointments.PageIndex = e.NewPageIndex;
             BindDoctorAppointments(txtSearch.Text.Trim());
         }
 
-        protected void gvDoctorAppointments_RowDataBound(object sender, GridViewRowEventArgs e)
+        // ── Day cards: each day's appointments, and its free times as one line ──
+
+        public class DayGroup
         {
-            if (e.Row.RowType == DataControlRowType.DataRow)
+            public string Title { get; set; }
+            public bool IsToday { get; set; }
+            public string Counts { get; set; }
+            public string FreeHtml { get; set; }
+            public string EmptyHtml { get; set; }
+            public DataTable Booked { get; set; }
+        }
+
+        void BindDays(DataTable slots, bool searching, string search, bool oneDay, string emptyReason)
+        {
+            var days = new List<DayGroup>();
+            int bookedTotal = 0, freeTotal = 0;
+            DateTime now = DateTime.Now;
+            foreach (var g in slots.Rows.Cast<DataRow>().GroupBy(r => r["AppointDate"].ToString()))
             {
-                // Calculate the correct row number based on pagination
-                int serialNo = gvDoctorAppointments.PageIndex * gvDoctorAppointments.PageSize + e.Row.RowIndex + 1;
-                e.Row.Cells[0].Text = serialNo.ToString();
+                DateTime date = DateTime.ParseExact(g.Key, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                var booked = g.Where(r => r["AppointmentID"].ToString() != "-").ToList();
+                // Free times still bookable: today only the ones that have not started yet
+                var free = g.Where(r => r["AppointmentID"].ToString() == "-")
+                            .Where(r => date.Date > now.Date || SlotStart(r) > now.TimeOfDay)
+                            .Select(r => r["TimeSlot"].ToString().Split(new[] { " - " }, StringSplitOptions.None)[0]).ToList();
+                if (searching && booked.Count == 0) continue;   // searching: only days with matching patients
 
-                if (DataBinder.Eval(e.Row.DataItem, "TimeSlot").ToString().Contains(OffHoursLabel))
+                DataTable table = slots.Clone();
+                foreach (DataRow r in booked) table.ImportRow(r);
+                bookedTotal += booked.Count;
+                freeTotal += free.Count;
+                days.Add(new DayGroup
                 {
-                    e.Row.Style["background"] = "#fff7ed";
-                    e.Row.ToolTip = "Booked before the working hours changed; the appointment was kept at its time";
-                }
+                    Title = SlotService.FormatDate(date),
+                    IsToday = date.Date == now.Date,
+                    Counts = booked.Count + " booked" + (searching ? "" : " &middot; " + free.Count + " free"),
+                    Booked = table,
+                    EmptyHtml = booked.Count == 0 ? "<div class=\"day-empty\">No appointments booked.</div>" : "",
+                    FreeHtml = searching ? "" : free.Count == 0
+                        ? "<div class=\"day-free none\">" + (date.Date == now.Date ? "No free times left today." : "Fully booked.") + "</div>"
+                        : "<div class=\"day-free\"><span class=\"day-free-label\">Free</span>" +
+                          string.Join("", free.Select(t => "<span class=\"free-chip\">" + t + "</span>")) + "</div>"
+                });
+            }
 
-                Button btnNotify = (Button)e.Row.FindControl("btnNotify");
-                Label lblNotified = (Label)e.Row.FindControl("lblNotified");
-                string appointmentId = DataBinder.Eval(e.Row.DataItem, "AppointmentID").ToString();
-                string status = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
-                object notifiedAt = DataBinder.Eval(e.Row.DataItem, "NotifiedAt");
+            rptDays.DataSource = days;
+            rptDays.DataBind();
+            pnlNoDays.Visible = days.Count == 0;
+            litNoDays.Text = searching ? "No appointments match &ldquo;" + HttpUtility.HtmlEncode(search) + "&rdquo;."
+                           : emptyReason ?? "No working days in this period.";
+            string range = searching ? "Search results" : oneDay ? "One day" : "Next 7 days <span class=\"sum-note\">(and later days with bookings)</span>";
+            litSummary.Text = "<div class=\"day-summary\"><span class=\"sum-range\">" + range + "</span>" +
+                (days.Count == 0 ? "" :
+                    "<span class=\"sum-pill booked\"><i class=\"fa-regular fa-calendar-check\"></i>" + bookedTotal + " booked</span>" +
+                    (searching ? "" : "<span class=\"sum-pill free\"><i class=\"fa-regular fa-clock\"></i>" + freeTotal + " free " + (freeTotal == 1 ? "time" : "times") + "</span>")) +
+                "</div>";
+        }
 
-                // The details email is about an upcoming visit: nothing to send for empty slots or for
-                // visits that are already over (Completed/Cancelled patients get their own automatic email)
-                btnNotify.Visible = appointmentId != "-" && status != "Not Booked" && !AppointmentStatus.IsFinal(status);
+        static TimeSpan SlotStart(DataRow r)
+        {
+            string key = r["SortKey"].ToString();   // "yyyy-MM-dd HH:mm"
+            TimeSpan t;
+            return key.Length >= 16 && TimeSpan.TryParse(key.Substring(11, 5), out t) ? t : TimeSpan.Zero;
+        }
 
-                // Walk-ins usually have no email address
-                if (btnNotify.Visible && DataBinder.Eval(e.Row.DataItem, "PatientEmail").ToString() == "")
-                {
-                    btnNotify.Visible = false;
-                    lblNotified.Text = "No email on file";
-                    lblNotified.Style["color"] = "#9ca3af";
-                    lblNotified.Visible = true;
-                }
+        protected void rptDays_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem) return;
+            var day = (DayGroup)e.Item.DataItem;
+            var inner = (Repeater)e.Item.FindControl("rptBooked");
+            inner.DataSource = day.Booked;
+            inner.DataBind();
+            inner.Visible = day.Booked.Rows.Count > 0;
+        }
 
-                // Already emailed (by the front desk, or automatically after online payment)
-                if (btnNotify.Visible && notifiedAt != null && notifiedAt != DBNull.Value)
-                {
-                    btnNotify.Text = "Resend";
-                    lblNotified.Text = "Notified &middot; " + Convert.ToDateTime(notifiedAt).ToString("dd MMM, hh:mm tt", System.Globalization.CultureInfo.InvariantCulture);
-                    lblNotified.Visible = true;
-                }
+        protected bool IsOffHours(object timeSlot) { return Convert.ToString(timeSlot).Contains(OffHoursLabel); }
+
+        protected string TimeText(object timeSlot)
+        {
+            string t = Convert.ToString(timeSlot);
+            return IsOffHours(t) ? t.Replace(" (" + OffHoursLabel + ")", "") : t;
+        }
+
+        protected string StatusBadge(object status)
+        {
+            string s = Convert.ToString(status);
+            return "<span class=\"st-badge st-" + s.Replace(" ", "") + "\">" + HttpUtility.HtmlEncode(s) + "</span>";
+        }
+
+        // Notify / Resend: only for an upcoming visit with an email address
+        protected void rptBooked_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem) return;
+            Button btnNotify = (Button)e.Item.FindControl("btnNotify");
+            Label lblNotified = (Label)e.Item.FindControl("lblNotified");
+            string status = DataBinder.Eval(e.Item.DataItem, "Status").ToString();
+            object notifiedAt = DataBinder.Eval(e.Item.DataItem, "NotifiedAt");
+
+            // Completed / Cancelled / No Show patients get their own automatic email
+            btnNotify.Visible = !AppointmentStatus.IsFinal(status);
+            if (btnNotify.Visible && DataBinder.Eval(e.Item.DataItem, "PatientEmail").ToString() == "")
+            {
+                btnNotify.Visible = false;
+                lblNotified.Text = "No email on file";
+                lblNotified.CssClass = "notified-text muted";
+                lblNotified.Visible = true;
+            }
+            if (btnNotify.Visible && notifiedAt != null && notifiedAt != DBNull.Value)
+            {
+                btnNotify.Text = "Resend";
+                lblNotified.Text = "Notified &middot; " + Convert.ToDateTime(notifiedAt).ToString("dd MMM, hh:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+                lblNotified.Visible = true;
             }
         }
     }

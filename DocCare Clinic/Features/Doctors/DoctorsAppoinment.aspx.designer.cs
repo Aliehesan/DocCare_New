@@ -52,7 +52,7 @@ namespace DocCare_Clinic {
 
         protected global::System.Web.UI.WebControls.LinkButton lnkNext7Days;
 
-        protected global::System.Web.UI.WebControls.Label lblShowing;
+        protected global::System.Web.UI.WebControls.Literal litSummary;
         
         /// <summary>
         /// gvDoctorAppointments control.
@@ -61,6 +61,10 @@ namespace DocCare_Clinic {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvDoctorAppointments;
+        protected global::System.Web.UI.WebControls.Repeater rptDays;
+
+        protected global::System.Web.UI.WebControls.Panel pnlNoDays;
+
+        protected global::System.Web.UI.WebControls.Literal litNoDays;
     }
 }

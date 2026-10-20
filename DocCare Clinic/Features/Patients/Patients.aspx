@@ -125,7 +125,7 @@
                                                         Patient List</h3>
                                                     <div class="top-nav-search table-search-blk">
                                                         <asp:TextBox ID="txtSearch" CssClass="form-control" runat="server" Placeholder="Name, Patient ID or mobile"
-                                                            AutoPostBack="false" onkeyup="SearchPatients()" ClientIDMode="Static"></asp:TextBox>
+                                                            AutoPostBack="false" ClientIDMode="Static" autocomplete="off"></asp:TextBox>
                                                         <asp:Button ID="btnHiddenSearch" runat="server" Style="display: none;" OnClick="txtSearch_TextChanged" />
                                                         <div style="display: inline-block; margin-top: -33px; margin-left: 10px;">
                                                             <svg width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -210,12 +210,4 @@
             </asp:UpdatePanel>
         </div>
     </div>
-    <script type="text/javascript">
-        function SearchPatients() {
-            clearTimeout(window.searchTimeout);
-            window.searchTimeout = setTimeout(function () {
-                __doPostBack('<%= btnHiddenSearch.UniqueID %>', '');
-            }, 500); // Delay search by 500ms to avoid excessive postbacks
-        }
-    </script>
 </asp:Content>

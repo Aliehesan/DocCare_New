@@ -145,7 +145,7 @@
                                                         Appointment List</h3>
                                                     <div class="top-nav-search table-search-blk">
                                                         <asp:TextBox ID="txtSearch" CssClass="form-control" runat="server" Placeholder="Name, Patient ID, mobile, token"
-                                                            AutoPostBack="false" onkeyup="SearchPatients()" ClientIDMode="Static"></asp:TextBox>
+                                                            AutoPostBack="false" ClientIDMode="Static" autocomplete="off"></asp:TextBox>
                                                         <asp:Button ID="btnHiddenSearch" runat="server" Style="display: none;" OnClick="txtSearch_TextChanged" />
                                                         <div style="background-color: transparent; border-color: transparent; min-height: 45px;
                                                             padding: 7px 10px; position: absolute; top: 16px; display: -webkit-box; display: -ms-flexbox;
@@ -261,14 +261,4 @@
             </asp:UpdatePanel>
         </div>
     </div>
-    <script type="text/javascript">
-        function SearchPatients() {
-            clearTimeout(window.searchTimeout);
-            window.searchTimeout = setTimeout(function () {
-                __doPostBack('<%= btnHiddenSearch.UniqueID %>', '');
-            }, 500); // Delay search by 500ms to avoid excessive postbacks
-        }
-    </script>
-    <script type="text/javascript">
-    </script>
 </asp:Content>

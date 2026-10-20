@@ -263,3 +263,22 @@ html[data-theme="dark"] .fu-badge.today { background: #12301f !important; color:
 html[data-theme="dark"] .fu-done, html[data-theme="dark"] .rx-remove { color: #fca5a5 !important; }
 html[data-theme="dark"] .rx-table th { color: var(--dm-muted) !important; }
 html[data-theme="dark"] .rx-add, html[data-theme="dark"] .mh-link { color: var(--dm-link) !important; }
+
+/* Doctor's Appointments: day cards */
+html[data-theme="dark"] .day-card { background: var(--dm-surface) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .day-title, html[data-theme="dark"] .day-time { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .day-counts, html[data-theme="dark"] .day-token, html[data-theme="dark"] .day-empty,
+html[data-theme="dark"] .day-free-label, html[data-theme="dark"] .day-none { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .day-table th { color: var(--dm-muted) !important; border-color: var(--dm-border) !important; background: transparent !important; }
+html[data-theme="dark"] .day-table td { border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .day-table tr.off-hours td { background: #2a2110 !important; }
+html[data-theme="dark"] .off-hours-badge { color: #fcd34d !important; }
+html[data-theme="dark"] .day-free { border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .free-chip { background: var(--dm-raised) !important; color: var(--dm-text) !important; }
+html[data-theme="dark"] .today-badge { background: var(--dm-primary) !important; color: #fff !important; }
+html[data-theme="dark"] .notified-text { color: #6ee7b7 !important; }
+html[data-theme="dark"] .notified-text.muted { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .day-summary .sum-range { color: var(--dm-text) !important; }
+html[data-theme="dark"] .day-summary .sum-note { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .sum-pill.booked { background: #1d2240 !important; color: var(--dm-link) !important; }
+html[data-theme="dark"] .sum-pill.free { background: var(--dm-raised) !important; color: var(--dm-text) !important; }

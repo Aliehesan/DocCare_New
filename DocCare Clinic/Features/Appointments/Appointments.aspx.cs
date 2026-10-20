@@ -16,6 +16,8 @@ namespace DocCare_Clinic
         string connectionString = ConfigurationManager.ConnectionStrings["DocCareDB"].ConnectionString;
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Search as you type, keeping the cursor and what was typed (assets/js/doccare-search.js)
+            txtSearch.Attributes["data-live-search"] = btnHiddenSearch.UniqueID;
             if (!IsPostBack)
             {
                 string userRole = Session["UserRole"] as string;
