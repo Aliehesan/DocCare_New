@@ -220,6 +220,111 @@
             }
         }
 
+        /* Tabs: Upcoming / Past / Cancelled */
+        .appt-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 0 0 22px;
+            padding: 6px;
+            background: #fff;
+            border: 1px solid #eef0f7;
+            border-radius: 16px;
+            width: fit-content;
+            box-shadow: 0 4px 16px rgba(46, 55, 164, 0.05);
+        }
+        .appt-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4b5563 !important;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .appt-tab:hover { background: #f5f7ff; color: #2E37A4 !important; }
+        .appt-tab.active { background: #2E37A4; color: #fff !important; }
+        .tab-count {
+            min-width: 22px;
+            padding: 1px 7px;
+            border-radius: 10px;
+            background: #eef2ff;
+            color: #2E37A4;
+            font-size: 12px;
+            text-align: center;
+        }
+        .appt-tab.active .tab-count { background: rgba(255, 255, 255, 0.22); color: #fff; }
+
+        /* Fee line */
+        .appt-meta-item.fee-line { margin-top: 3px; font-size: 12.5px; }
+        .fee-paid { color: #059669; font-weight: 600; }
+        .fee-due { color: #d97706; font-weight: 600; }
+
+        /* Empty tab */
+        .tab-empty {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: #fff;
+            border: 1px dashed #c7d2fe;
+            border-radius: 18px;
+            padding: 22px 26px;
+            color: #4b5563;
+            font-size: 14px;
+        }
+        .tab-empty i { color: #2E37A4; font-size: 20px; }
+        .tab-empty-book { margin-left: auto; font-weight: 600; color: #2E37A4 !important; }
+
+        /* Pager */
+        .appt-pager {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 6px;
+        }
+        .pager-info { font-size: 13.5px; color: #6b7280; }
+        .pager-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+        .pager-btn {
+            min-width: 38px;
+            padding: 7px 13px;
+            border-radius: 10px;
+            border: 1.5px solid #dfe3fb;
+            background: #fff;
+            color: #2E37A4 !important;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+        }
+        .pager-btn:hover { border-color: #2E37A4; }
+        .pager-btn.active { background: #2E37A4; border-color: #2E37A4; color: #fff !important; }
+        .pager-btn.disabled { color: #b7bdd6 !important; border-color: #eef0f7; pointer-events: none; }
+
+        .appt-meta-item > span { flex-wrap: wrap; max-width: 100%; }
+        .nowrap { white-space: nowrap; }
+
+        @media (max-width: 576px) {
+            .appointments-page-wrapper { padding: 0 16px 48px; }
+            .appointment-card-modern { padding: 20px 18px; gap: 14px; }
+            .appt-left-col { align-items: flex-start; gap: 14px; }
+            .appt-doc-img { width: 58px; height: 58px; border-width: 2px; padding: 2px; }
+            .appt-doc-name { font-size: 18px; }
+            .appt-right-col { flex-wrap: wrap; justify-content: flex-start; gap: 10px; min-width: 0; }
+            .appt-right-col .status-badge-pill { width: 100%; justify-content: center; }
+            .reschedule-btn-modern, .cancel-btn-modern, .cancelled-btn-modern {
+                flex: 1; margin-bottom: 0; padding: 8px 12px; white-space: nowrap; text-align: center;
+            }
+            .appt-tabs { width: 100%; }
+            .appt-tab { flex: 1; justify-content: center; padding: 9px 10px; }
+            .appt-pager { justify-content: center; }
+        }
+
         /* Empty state: no appointments booked yet */
         .no-appt-card {
             background: #fff;
@@ -270,6 +375,14 @@
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <div class="appointments-page-wrapper">
+                <asp:Panel ID="pnlList" runat="server">
+                <%-- Upcoming (soonest first) / Past / Cancelled, with counts --%>
+                <div class="appt-tabs" role="tablist">
+                    <asp:LinkButton ID="tabUpcoming" runat="server" CommandArgument="upcoming" OnCommand="Tab_Command" CausesValidation="false" />
+                    <asp:LinkButton ID="tabPast" runat="server" CommandArgument="past" OnCommand="Tab_Command" CausesValidation="false" />
+                    <asp:LinkButton ID="tabCancelled" runat="server" CommandArgument="cancelled" OnCommand="Tab_Command" CausesValidation="false" />
+                </div>
+
                 <asp:Repeater ID="rptAppointments" runat="server">
                     <ItemTemplate>
                         <div class="appointment-card-modern">
@@ -295,15 +408,9 @@
                                         </div>
                                         <div class="appt-meta-item">
                                             <i class="fa-regular fa-calendar-check"></i>
-                                            <span><strong><%# Eval("AppointDate", "{0:dd MMM, yyyy}") %></strong>&nbsp;&bull;&nbsp;<%# Eval("AppointTime") %></span>
+                                            <span><strong><%# Eval("AppointDate", "{0:ddd, dd MMM yyyy}") %></strong>&nbsp;&bull;&nbsp;<%# Eval("AppointTime") %><%# Eval("TokenNo").ToString() == "" ? "" : "&nbsp;&bull; <span class=\"nowrap\">Token <strong>" + HttpUtility.HtmlEncode(Eval("TokenNo")) + "</strong></span>" %></span>
                                         </div>
-                                        <%# Convert.ToDecimal(Eval("TotalFee")) > 0 ? 
-                                            "<div class='appt-meta-item' style='margin-top:3px; font-size:12.5px;'>" +
-                                            "<i class='fa-solid fa-receipt' style='color:var(--primary);'></i>" +
-                                            "<span><strong>Fee: &#8377;" + string.Format("{0:N0}", Eval("TotalFee")) + "</strong> &bull; " +
-                                            "<span style='color:#059669; font-weight:600;'><i class='fa-solid fa-circle-check'></i> Paid: &#8377;" + string.Format("{0:N0}", Eval("PaidAmount")) + " (20%)</span> &bull; " +
-                                            "<span style='color:#d97706; font-weight:600;'><i class='fa-solid fa-clock'></i> Due at clinic: &#8377;" + string.Format("{0:N0}", Eval("DueAmount")) + "</span>" +
-                                            "</span></div>" : "" %>
+                                        <%# FeeLine(Container.DataItem) %>
                                     </div>
                                 </div>
                             </div>
@@ -322,7 +429,8 @@
                                     <i class="fa-regular fa-calendar"></i> Reschedule
                                 </asp:HyperLink>
 
-                                <asp:Button ID="btnCancel" runat="server"
+                                <%-- Finished appointments: the status badge says it all --%>
+                                <asp:Button ID="btnCancel" runat="server" Visible='<%# IsActive(Eval("Status")) %>'
                                     Text='<%# CancelText(Eval("Status"), Eval("AppointDate"), Eval("AppointTimeRaw")) %>'
                                     CssClass='<%# CancelCss(Eval("Status"), Eval("AppointDate"), Eval("AppointTimeRaw")) %>'
                                     Enabled='<%# CanChangeOnline(Eval("Status"), Eval("AppointDate"), Eval("AppointTimeRaw")) %>'
@@ -334,6 +442,28 @@
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>
+
+                <asp:Panel ID="pnlTabEmpty" runat="server" Visible="false" CssClass="tab-empty">
+                    <i class="fa-regular fa-calendar"></i>
+                    <span><asp:Literal ID="litTabEmpty" runat="server" /></span>
+                    <asp:HyperLink ID="lnkTabEmptyBook" runat="server" NavigateUrl="~/Features/Doctors/Doctors-Team.aspx" CssClass="tab-empty-book">Book an appointment</asp:HyperLink>
+                </asp:Panel>
+
+                <%-- 5 per page --%>
+                <asp:Panel ID="pnlPager" runat="server" CssClass="appt-pager">
+                    <span class="pager-info"><asp:Literal ID="litPagerInfo" runat="server" /></span>
+                    <div class="pager-buttons">
+                        <asp:LinkButton ID="lnkPrev" runat="server" CommandArgument="prev" OnCommand="Page_Command" CausesValidation="false" aria-label="Previous page">&lsaquo; Previous</asp:LinkButton>
+                        <asp:Repeater ID="rptPages" runat="server">
+                            <ItemTemplate>
+                                <asp:LinkButton ID="lnkPage" runat="server" CommandArgument='<%# Eval("Index") %>' OnCommand="Page_Command"
+                                    CausesValidation="false" CssClass='<%# Eval("Css") %>' Text='<%# Eval("Label") %>' />
+                            </ItemTemplate>
+                        </asp:Repeater>
+                        <asp:LinkButton ID="lnkNext" runat="server" CommandArgument="next" OnCommand="Page_Command" CausesValidation="false" aria-label="Next page">Next &rsaquo;</asp:LinkButton>
+                    </div>
+                </asp:Panel>
+                </asp:Panel>
 
                 <asp:Panel ID="pnlNoAppointments" runat="server" Visible="false" CssClass="no-appt-card">
                     <div class="no-appt-icon"><i class="fa-regular fa-calendar-xmark"></i></div>
@@ -349,8 +479,8 @@
 
     <script>
         window.onload = function () {
-            var successMessage = '<%= Session["SuccessMessage"] %>';
-            var errorMessage = '<%= Session["ErrorMessage"] %>';
+            var successMessage = '<%= HttpUtility.JavaScriptStringEncode(Convert.ToString(Session["SuccessMessage"])) %>';
+            var errorMessage = '<%= HttpUtility.JavaScriptStringEncode(Convert.ToString(Session["ErrorMessage"])) %>';
 
             var Toast = Swal.mixin({
                 toast: true,

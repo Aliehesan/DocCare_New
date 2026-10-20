@@ -47,5 +47,29 @@ namespace DocCare_Clinic {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlNoAppointments;
+
+        protected global::System.Web.UI.WebControls.Panel pnlList;
+
+        protected global::System.Web.UI.WebControls.LinkButton tabUpcoming;
+
+        protected global::System.Web.UI.WebControls.LinkButton tabPast;
+
+        protected global::System.Web.UI.WebControls.LinkButton tabCancelled;
+
+        protected global::System.Web.UI.WebControls.Panel pnlTabEmpty;
+
+        protected global::System.Web.UI.WebControls.Literal litTabEmpty;
+
+        protected global::System.Web.UI.WebControls.HyperLink lnkTabEmptyBook;
+
+        protected global::System.Web.UI.WebControls.Panel pnlPager;
+
+        protected global::System.Web.UI.WebControls.Literal litPagerInfo;
+
+        protected global::System.Web.UI.WebControls.LinkButton lnkPrev;
+
+        protected global::System.Web.UI.WebControls.Repeater rptPages;
+
+        protected global::System.Web.UI.WebControls.LinkButton lnkNext;
     }
 }
