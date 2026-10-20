@@ -336,9 +336,10 @@ namespace DocCare_Clinic
             };
         }
 
-        // Called by the Pay button right before payment opens: is the chosen time still free?
+        // Called by the Pay button right before payment opens: is the chosen time still free, and free for
+        // this patient (not with this doctor already that day, no overlap with their other appointments)?
         [System.Web.Services.WebMethod(EnableSession = true)]
-        public static object CheckSlot(int doctorId, string date, string slot)
+        public static object CheckSlot(int doctorId, string date, string slot, int patientId)
         {
             DateTime day;
             TimeSpan time;
@@ -347,11 +348,30 @@ namespace DocCare_Clinic
 
             string reason;
             bool free;
+            string patientName = null;
             string cs = ConfigurationManager.ConnectionStrings["DocCareDB"].ConnectionString;
             using (SqlConnection con = new SqlConnection(cs))
             {
                 con.Open();
                 free = SlotService.IsSlotFree(con, doctorId, day, time, SlotService.OnlineBufferMinutes, out reason);
+
+                // Only the logged-in account's own family (so other patients' bookings are never revealed)
+                object userId = HttpContext.Current.Session["UserId"];
+                if (userId != null)
+                    using (SqlCommand cmd = new SqlCommand(
+                        "SELECT PatientName FROM Patients WHERE PatientID = @PatientID AND UserID = @UserID AND ISNULL(IsDeleted, 0) = 0", con))
+                    {
+                        cmd.Parameters.AddWithValue("@PatientID", patientId);
+                        cmd.Parameters.AddWithValue("@UserID", userId.ToString());
+                        patientName = cmd.ExecuteScalar() as string;
+                    }
+            }
+            if (patientName == null)
+                return new { available = false, message = "Please select a patient." };
+            if (free)
+            {
+                string clash = SlotService.PatientConflict(patientId, patientName, doctorId, day, time, null);
+                if (clash != null) { free = false; reason = clash; }
             }
             return new
             {
@@ -416,21 +436,14 @@ namespace DocCare_Clinic
                 {
                     con.Open();
 
-                    // Step 1: one appointment per patient with this doctor per day
-                    string checkDuplicateQuery = @"
-                        SELECT COUNT(*) FROM Appointments
-                        WHERE PatientID = @PatientID
-                        AND DoctorID = @DoctorID
-                        AND AppointDate = @Date
-                        AND Status <> 'Cancelled'";  // Ignore cancelled appointments
-
-                    SqlCommand checkDuplicateCmd = new SqlCommand(checkDuplicateQuery, con);
-                    checkDuplicateCmd.Parameters.AddWithValue("@PatientID", patientId);
-                    checkDuplicateCmd.Parameters.AddWithValue("@DoctorID", doctor);
-                    checkDuplicateCmd.Parameters.AddWithValue("@Date", appointDate);
-                    if ((int)checkDuplicateCmd.ExecuteScalar() > 0)
+                    // Step 1: not with this doctor already that day, and no overlap with the patient's other
+                    // appointments (checked before payment too, so this only happens if one was booked meanwhile)
+                    string patientName = Convert.ToString(new SqlCommand("SELECT PatientName FROM Patients WHERE PatientID = " + patient, con).ExecuteScalar());
+                    string clash = SlotService.PatientConflict(patient, patientName, doctor, appointDate, appointTime, null);
+                    if (clash != null)
                     {
-                        Session["ErrorMessage"] = "This patient already has an appointment with this doctor on " + SlotService.FormatDate(appointDate) + ".";
+                        Session["ErrorMessage"] = string.IsNullOrEmpty(paymentRef) ? clash
+                            : clash + " Payment reference: " + paymentRef + ". Please contact the clinic for a refund.";
                         return;
                     }
 

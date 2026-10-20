@@ -124,6 +124,18 @@ namespace DocCare_Clinic
                 con.Open();
                 free = SlotService.GetFreeSlots(con, a.DoctorId, day, SlotService.OnlineBufferMinutes, out reason);
             }
+
+            // Leave out times that overlap the patient's other appointments that day (or the whole day when
+            // they already see this doctor then); say why when that leaves nothing
+            string firstClash = null;
+            free = free.Where(t =>
+            {
+                string clash = SlotService.PatientConflict(a.PatientId, a.Patient, a.DoctorId, day, t, a.Id);
+                if (clash != null && firstClash == null) firstClash = clash;
+                return clash == null;
+            }).ToList();
+            if (free.Count == 0 && firstClash != null) reason = firstClash;
+
             return new
             {
                 available = free.Count > 0,
@@ -156,19 +168,13 @@ namespace DocCare_Clinic
             {
                 con.Open();
 
-                // One appointment per patient with this doctor per day (not counting this one)
-                using (SqlCommand dup = new SqlCommand(@"SELECT COUNT(*) FROM Appointments
-                    WHERE PatientID = @PatientID AND DoctorID = @DoctorID AND AppointDate = @Date AND ID <> @ID AND Status <> 'Cancelled'", con))
+                // Not with this doctor again that day, and no overlap with the patient's other appointments
+                // (this appointment itself does not count)
+                string clash = SlotService.PatientConflict(a.PatientId, a.Patient, a.DoctorId, newDate, newTime, a.Id);
+                if (clash != null)
                 {
-                    dup.Parameters.AddWithValue("@PatientID", a.PatientId);
-                    dup.Parameters.AddWithValue("@DoctorID", a.DoctorId);
-                    dup.Parameters.AddWithValue("@Date", newDate);
-                    dup.Parameters.AddWithValue("@ID", a.Id);
-                    if ((int)dup.ExecuteScalar() > 0)
-                    {
-                        Alert("warning", "Already Booked", a.Patient + " already has another appointment with this doctor on " + SlotService.FormatDate(newDate) + ".");
-                        return;
-                    }
+                    Alert("warning", "Already Booked", clash);
+                    return;
                 }
 
                 string reason;

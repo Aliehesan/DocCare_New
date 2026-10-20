@@ -316,6 +316,38 @@ namespace DocCare_Clinic
                 age--; // Adjust for birthdays later in the year
             }
 
+            // Returning patient: not with this doctor again today, and the first free time that does not
+            // overlap their other appointments today (e.g. already with another doctor at that time)
+            int? knownPatient;
+            using (SqlConnection pc = new SqlConnection(connectionString))
+            {
+                pc.Open();
+                knownPatient = ExistingPatientId(pc, null, patientName, mobile);
+            }
+            if (knownPatient.HasValue)
+            {
+                string clash = null;
+                TimeSpan? pick = null;
+                using (SqlConnection sc = new SqlConnection(connectionString))
+                {
+                    sc.Open();
+                    string freeReason;
+                    foreach (TimeSpan t in SlotService.GetFreeSlots(sc, doctorID, today, SlotService.WalkInBufferMinutes, out freeReason))
+                    {
+                        string c = SlotService.PatientConflict(knownPatient.Value, patientName, doctorID, today, t, null);
+                        if (c == null) { pick = t; break; }
+                        if (clash == null) clash = c;
+                    }
+                }
+                if (!pick.HasValue)
+                {
+                    ClientScript.RegisterStartupScript(this.GetType(), "patientClash",
+                        "swalAlert('warning', 'Already Booked', '" + HttpUtility.JavaScriptStringEncode(clash ?? slotReason ?? "No free time is left today.") + "');", true);
+                    return;
+                }
+                appointTime = pick.Value.ToString(@"hh\:mm\:ss");
+            }
+
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();

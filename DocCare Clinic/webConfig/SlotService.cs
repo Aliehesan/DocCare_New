@@ -289,6 +289,60 @@ namespace DocCare_Clinic.Config
             }
         }
 
+        /// <summary>
+        /// Why this patient cannot have this appointment, or null when they can. A patient (one person, not
+        /// the account) cannot see the same doctor twice in a day, nor be in two appointments whose times
+        /// overlap with any doctors (each doctor's slot length is used, e.g. 10:00-10:30 clashes with 10:15).
+        /// ignoreAppointmentId: the appointment being moved (reschedule). Opens its own connection and does not
+        /// read the Patients row, so it is safe to call while a booking transaction holds that row.
+        /// </summary>
+        public static string PatientConflict(int patientId, string patientName, int doctorId, DateTime date, TimeSpan start, int? ignoreAppointmentId)
+        {
+            string who = string.IsNullOrWhiteSpace(patientName) ? "This patient" : patientName.Trim();
+            string cs = System.Configuration.ConfigurationManager.ConnectionStrings["DocCareDB"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                con.Open();
+                int newLength = GetSlotDuration(con, doctorId, date) ?? 30;
+                TimeSpan newEnd = start + TimeSpan.FromMinutes(newLength);
+
+                using (SqlCommand cmd = new SqlCommand(@"
+                    SELECT a.DoctorID, a.AppointTime, a.Status, d.Name AS DoctorName, ISNULL(w.SlotDuration, 30) AS SlotDuration
+                    FROM Appointments a
+                    JOIN Doctors d ON d.DoctorID = a.DoctorID
+                    LEFT JOIN DoctorWorkingHours w ON w.DoctorID = a.DoctorID AND w.DayOfWeek = @Day
+                    WHERE a.PatientID = @PatientID AND a.AppointDate = @Date AND a.Status <> 'Cancelled'
+                      AND (@IgnoreID IS NULL OR a.ID <> @IgnoreID)
+                    ORDER BY a.AppointTime", con))
+                {
+                    cmd.Parameters.AddWithValue("@PatientID", patientId);
+                    cmd.Parameters.AddWithValue("@Date", date.Date);
+                    cmd.Parameters.AddWithValue("@Day", (int)date.DayOfWeek);
+                    cmd.Parameters.AddWithValue("@IgnoreID", ignoreAppointmentId.HasValue ? (object)ignoreAppointmentId.Value : DBNull.Value);
+                    System.Data.DataTable others = new System.Data.DataTable();
+                    others.Load(cmd.ExecuteReader());
+
+                    // Same doctor first: then no time that day would do, so say that rather than a single clash
+                    foreach (System.Data.DataRow r in others.Rows)
+                        if (Convert.ToInt32(r["DoctorID"]) == doctorId)
+                            return who + " already has an appointment with Dr. " + DoctorName.WithoutTitle(r["DoctorName"].ToString()) +
+                                   " on " + FormatDate(date) + ".";
+
+                    // Another doctor: only a clash when the times overlap (a missed visit no longer holds the time)
+                    foreach (System.Data.DataRow r in others.Rows)
+                    {
+                        if (r["AppointTime"] == DBNull.Value || r["Status"].ToString() == AppointmentStatus.NoShow) continue;
+                        TimeSpan otherStart = (TimeSpan)r["AppointTime"];
+                        TimeSpan otherEnd = otherStart + TimeSpan.FromMinutes(Convert.ToInt32(r["SlotDuration"]));
+                        if (otherStart < newEnd && start < otherEnd)
+                            return who + " already has an appointment with Dr. " + DoctorName.WithoutTitle(r["DoctorName"].ToString()) +
+                                   " at " + Format(otherStart) + " on " + FormatDate(date) + ". Please choose a time that does not overlap it.";
+                    }
+                }
+            }
+            return null;
+        }
+
         /// <summary>Next token for a doctor on a date: T-001, T-002 ... restarting for each doctor each day.</summary>
         public static string NextToken(SqlConnection con, SqlTransaction tx, int doctorId, DateTime date)
         {

@@ -1721,8 +1721,8 @@
     <!-- Alert Handler Scripts (Modern Toast) -->
     <script>
         window.onload = function () {
-            var successMessage = '<%= Session["SuccessMessage"] %>';
-            var errorMessage = '<%= Session["ErrorMessage"] %>';
+            var successMessage = '<%= HttpUtility.JavaScriptStringEncode(Convert.ToString(Session["SuccessMessage"])) %>';
+            var errorMessage = '<%= HttpUtility.JavaScriptStringEncode(Convert.ToString(Session["ErrorMessage"])) %>';
             var redirectToDefault = '<%= Session["RedirectToDefault"] %>';
 
             // Modern SweetAlert2 Toast configuration
@@ -2046,7 +2046,8 @@
             fetch(window.location.pathname + '/CheckSlot', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json; charset=utf-8' },
-                body: JSON.stringify({ doctorId: doctorIdFromUrl(), date: dateField().value, slot: slotField().value })
+                body: JSON.stringify({ doctorId: doctorIdFromUrl(), date: dateField().value, slot: slotField().value,
+                                       patientId: parseInt(document.getElementById('<%= hdnSelectedPatientId.ClientID %>').value, 10) || 0 })
             })
                 .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
                 .then(function (data) {
