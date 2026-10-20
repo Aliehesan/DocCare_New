@@ -411,7 +411,10 @@
     <script>
         // Called by the server after every bind (first load and each filter), with the filtered counts
         var reportCharts = {};
-        var CHART_INK = '#52514e', CHART_GRID = '#e8e7e3', CHART_BAR = '#2a78d6';
+        // ink and grid follow light / dark mode (assets/js/doccare-theme.js)
+        var CHART_BAR = '#2a78d6';
+        function chartInk() { return window.DocCareTheme ? DocCareTheme.ink() : '#52514e'; }
+        function chartGrid() { return window.DocCareTheme ? DocCareTheme.grid() : '#e8e7e3'; }
 
         // Value at the end of each bar (one series, few bars, so every bar is labelled)
         var barValueLabels = {
@@ -419,7 +422,7 @@
             afterDatasetsDraw: function (chart) {
                 var ctx = chart.ctx, horizontal = chart.options.indexAxis === 'y';
                 ctx.save();
-                ctx.fillStyle = CHART_INK;
+                ctx.fillStyle = chartInk();
                 ctx.font = '600 12px Poppins, sans-serif';
                 chart.getDatasetMeta(0).data.forEach(function (bar, i) {
                     var v = chart.data.datasets[0].data[i];
@@ -441,8 +444,8 @@
             card.querySelector('.chart-empty').style.display = empty ? 'flex' : 'none';
             if (empty) return;
 
-            var valueAxis = { beginAtZero: true, grace: '12%', ticks: { precision: 0, color: CHART_INK }, grid: { color: CHART_GRID, drawBorder: false } };
-            var labelAxis = { ticks: { color: CHART_INK, autoSkip: true, maxRotation: 0 }, grid: { display: false, drawBorder: false } };
+            var valueAxis = { beginAtZero: true, grace: '12%', ticks: { precision: 0, color: chartInk() }, grid: { color: chartGrid(), drawBorder: false } };
+            var labelAxis = { ticks: { color: chartInk(), autoSkip: true, maxRotation: 0 }, grid: { display: false, drawBorder: false } };
             reportCharts[id] = new Chart(canvas, {
                 type: 'bar',
                 data: { labels: labels, datasets: [{ data: values, backgroundColor: CHART_BAR, borderRadius: 4, maxBarThickness: 28 }] },

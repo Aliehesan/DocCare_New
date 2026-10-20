@@ -2,7 +2,7 @@
     CodeBehind="ReceptionistDashboard.aspx.cs" Inherits="DocCare_Clinic.ReceptionistDashboard" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/plugins/chartjs/chart.min.js"></script>
     <script>
         var myChart = null; // ✅ Prevent Duplicate Charts
 
@@ -31,7 +31,9 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'bottom'
+                            position: 'bottom',
+                            // legend text follows light / dark mode (assets/js/doccare-theme.js)
+                            labels: { color: window.DocCareTheme ? DocCareTheme.ink() : '#666' }
                         }
                     },
                     animation: {
@@ -64,7 +66,9 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'bottom'
+                            position: 'bottom',
+                            // legend text follows light / dark mode (assets/js/doccare-theme.js)
+                            labels: { color: window.DocCareTheme ? DocCareTheme.ink() : '#666' }
                         }
                     }
                 }

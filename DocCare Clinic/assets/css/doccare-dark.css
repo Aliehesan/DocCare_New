@@ -1,0 +1,265 @@
+/* Dark mode for the staff panels (admin, reception, doctor): see assets/js/doccare-theme.js.
+   Everything here applies only when <html data-theme="dark">; the light theme is untouched. */
+
+html[data-theme="dark"] {
+    --dm-bg: #0f1117;          /* page */
+    --dm-surface: #181b25;     /* header, sidebar, cards */
+    --dm-raised: #1f2330;      /* inputs, hover, table heads */
+    --dm-border: #2a2f3f;
+    --dm-text: #d6d9e4;
+    --dm-heading: #f1f3f9;
+    --dm-muted: #9aa0b4;
+    --dm-link: #9ea6ff;        /* brand blue, light enough to read on dark */
+    --dm-primary: #4651d6;     /* buttons */
+    color-scheme: dark;        /* native date pickers, scrollbars */
+}
+
+/* ── Toggle button ─────────────────────────────────────────────────────── */
+.theme-toggle-item { display: flex; align-items: center; margin-right: 6px; }
+button.theme-toggle {
+    width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid rgba(46, 55, 164, 0.18);
+    background: #f5f6ff; color: #2E37A4; display: inline-flex; align-items: center; justify-content: center;
+    font-size: 16px; cursor: pointer; transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+button.theme-toggle:hover { border-color: #2E37A4; }
+button.theme-toggle:focus-visible { outline: 2px solid #2E37A4; outline-offset: 2px; }
+html[data-theme="dark"] button.theme-toggle { background: var(--dm-raised); color: #ffd166; border-color: var(--dm-border); }
+html[data-theme="dark"] button.theme-toggle:hover { border-color: #ffd166; }
+
+/* ── Page, header, sidebar ─────────────────────────────────────────────── */
+html[data-theme="dark"] body,
+html[data-theme="dark"] .main-wrapper,
+html[data-theme="dark"] .page-wrapper { background: var(--dm-bg) !important; color: var(--dm-text); }
+html[data-theme="dark"] .header,
+html[data-theme="dark"] .header .header-left { background: var(--dm-surface) !important; border-color: var(--dm-border) !important; box-shadow: none; }
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .sidebar-inner,
+html[data-theme="dark"] .sidebar .sidebar-menu { background: var(--dm-surface) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .sidebar-menu ul li a,
+html[data-theme="dark"] .sidebar-menu li.menu-title,
+html[data-theme="dark"] .sidebar-menu .menu-title { color: var(--dm-text) !important; }
+html[data-theme="dark"] .sidebar-menu ul li a:hover,
+html[data-theme="dark"] .sidebar-menu li.active > a,
+html[data-theme="dark"] .sidebar-menu ul ul a.active { color: var(--dm-heading) !important; background: var(--dm-raised) !important; }
+html[data-theme="dark"] .sidebar-menu .menu-side { background: var(--dm-raised) !important; }
+html[data-theme="dark"] .sidebar-menu svg path,
+html[data-theme="dark"] .header svg path { fill: #c3c7d6 !important; }
+html[data-theme="dark"] .sidebar-menu ul ul { background: transparent !important; }
+html[data-theme="dark"] .header .user-names h5,
+html[data-theme="dark"] .header .user-names span { color: var(--dm-link) !important; }
+html[data-theme="dark"] .header .user-icon i { color: var(--dm-link) !important; }
+html[data-theme="dark"] .header .logo span,
+html[data-theme="dark"] .header-left .logo span { color: var(--dm-heading) !important; }
+
+/* ── Text ──────────────────────────────────────────────────────────────── */
+html[data-theme="dark"] h1, html[data-theme="dark"] h2, html[data-theme="dark"] h3,
+html[data-theme="dark"] h4, html[data-theme="dark"] h5, html[data-theme="dark"] h6,
+html[data-theme="dark"] .card-title,
+html[data-theme="dark"] .form-heading h4,
+html[data-theme="dark"] .doctor-table-blk h3,
+html[data-theme="dark"] .chart-title h4,
+html[data-theme="dark"] .about-info h4,
+html[data-theme="dark"] .heading-detail h4 { color: var(--dm-heading) !important; }
+/* plain text takes the page colour; coloured spans (percentages, statuses) keep theirs */
+html[data-theme="dark"] p, html[data-theme="dark"] label, html[data-theme="dark"] li, html[data-theme="dark"] td { color: inherit; }
+html[data-theme="dark"] a { color: var(--dm-link); }
+html[data-theme="dark"] .text-muted { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .breadcrumb,
+html[data-theme="dark"] .breadcrumb-item a,
+html[data-theme="dark"] .breadcrumb .breadcrumb-item.active { color: var(--dm-link) !important; }
+html[data-theme="dark"] .breadcrumb .breadcrumb-item.active { color: var(--dm-muted) !important; }
+html[data-theme="dark"] hr { border-color: var(--dm-border); }
+
+/* Inline colours used across pages: keep them readable on dark */
+html[data-theme="dark"] [style*="color: #6b7280"], html[data-theme="dark"] [style*="color:#6b7280"],
+html[data-theme="dark"] [style*="color: #52514e"], html[data-theme="dark"] [style*="color:#52514e"],
+html[data-theme="dark"] [style*="color: #4b5563"], html[data-theme="dark"] [style*="color:#4b5563"],
+html[data-theme="dark"] [style*="color:#9ca3af"], html[data-theme="dark"] [style*="color: #9ca3af"] { color: var(--dm-muted) !important; }
+html[data-theme="dark"] [style*="color: #111827"], html[data-theme="dark"] [style*="color:#111827"],
+html[data-theme="dark"] [style*="color: #1f2937"], html[data-theme="dark"] [style*="color:#1f2937"],
+html[data-theme="dark"] [style*="color: #374151"], html[data-theme="dark"] [style*="color:#374151"],
+html[data-theme="dark"] [style*="color: #333"], html[data-theme="dark"] [style*="color:#333"] { color: var(--dm-text) !important; }
+html[data-theme="dark"] [style*="color: #2E37A4"], html[data-theme="dark"] [style*="color:#2E37A4"],
+html[data-theme="dark"] [style*="color: #2e37a4"], html[data-theme="dark"] [style*="color:#2e37a4"] { color: var(--dm-link) !important; }
+html[data-theme="dark"] [style*="background: #fff;"], html[data-theme="dark"] [style*="background:#fff;"],
+html[data-theme="dark"] [style*="background-color: #fff"], html[data-theme="dark"] [style*="background: #ffffff"],
+html[data-theme="dark"] [style*="background:#ffffff"], html[data-theme="dark"] [style*="background: white"] { background: var(--dm-surface) !important; }
+
+/* ── Cards, panels, widgets ────────────────────────────────────────────── */
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .card-header,
+html[data-theme="dark"] .card-footer,
+html[data-theme="dark"] .dash-widget,
+html[data-theme="dark"] .good-morning-blk,
+html[data-theme="dark"] .doctor-personals-grp .card,
+html[data-theme="dark"] .profile-user-box,
+html[data-theme="dark"] .doctor-profile-head,
+html[data-theme="dark"] .page-table-header,
+html[data-theme="dark"] .list-group-item { background: var(--dm-surface) !important; border-color: var(--dm-border) !important; color: var(--dm-text); }
+/* Doctor dashboard stats strip */
+html[data-theme="dark"] .doctor-list-blk,
+html[data-theme="dark"] .doctor-widget { background: var(--dm-surface) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .doctor-content h4 { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .doctor-content h5, html[data-theme="dark"] .doctor-content h4 span { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .border-right-bg::before, html[data-theme="dark"] .border-right-bg::after { background: var(--dm-border) !important; }
+/* empty grid rows ("No upcoming days off") */
+html[data-theme="dark"] table td[colspan] { background: var(--dm-raised) !important; color: var(--dm-muted) !important; }
+html[data-theme="dark"] .card .card { background: var(--dm-surface) !important; border: 1px solid var(--dm-border) !important; }
+html[data-theme="dark"] .dash-boxs { background: rgba(158, 166, 255, 0.08) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .dash-content h4, html[data-theme="dark"] .dash-content p { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .dash-content h2, html[data-theme="dark"] .dash-count h2 { color: var(--dm-link) !important; }
+html[data-theme="dark"] .dash-icon { color: var(--dm-link) !important; }
+html[data-theme="dark"] .good-morning-blk .morning-user h2,
+html[data-theme="dark"] .morning-user h2 span { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .morning-user p { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .about-me-list h4, html[data-theme="dark"] .detail-personal h2 { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .about-me-list span, html[data-theme="dark"] .detail-personal h3 { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .tab-content-set .nav { border-color: var(--dm-border) !important; }
+
+/* ── Tables ────────────────────────────────────────────────────────────── */
+html[data-theme="dark"] .table,
+html[data-theme="dark"] .custom-table,
+html[data-theme="dark"] .comman-table { color: var(--dm-text) !important; border-color: var(--dm-border) !important; --bs-table-bg: transparent; --bs-table-color: var(--dm-text); }
+html[data-theme="dark"] .table > :not(caption) > * > *,
+html[data-theme="dark"] .table td, html[data-theme="dark"] .table th { background-color: transparent !important; color: var(--dm-text) !important; border-color: var(--dm-border) !important; }
+/* DataTables paints every row white */
+html[data-theme="dark"] table.dataTable tbody tr,
+html[data-theme="dark"] table tbody tr,
+html[data-theme="dark"] table.dataTable { background-color: transparent !important; }
+html[data-theme="dark"] .table thead th, html[data-theme="dark"] .table thead tr { background: var(--dm-raised) !important; color: var(--dm-heading) !important; }
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * { background-color: rgba(255, 255, 255, 0.025) !important; }
+html[data-theme="dark"] .table-hover tbody tr:hover > *,
+html[data-theme="dark"] .custom-table tbody tr:hover td { background-color: var(--dm-raised) !important; }
+
+/* ── Forms ─────────────────────────────────────────────────────────────── */
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] input[type="text"], html[data-theme="dark"] input[type="date"],
+html[data-theme="dark"] input[type="time"], html[data-theme="dark"] input[type="number"],
+html[data-theme="dark"] input[type="email"], html[data-theme="dark"] input[type="password"],
+html[data-theme="dark"] input[type="search"] { background-color: var(--dm-raised) !important; color: var(--dm-heading) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .form-control:focus { border-color: var(--dm-link) !important; box-shadow: 0 0 0 3px rgba(158, 166, 255, 0.15) !important; }
+html[data-theme="dark"] .form-control::placeholder, html[data-theme="dark"] textarea::placeholder { color: #6f7590 !important; }
+html[data-theme="dark"] .form-control[readonly], html[data-theme="dark"] .form-control:disabled { background-color: #191c27 !important; color: var(--dm-muted) !important; }
+html[data-theme="dark"] .local-forms label,
+html[data-theme="dark"] .input-block label { background: var(--dm-surface) !important; color: var(--dm-text) !important; }
+html[data-theme="dark"] .form-check-label, html[data-theme="dark"] .gen-label { color: var(--dm-text) !important; }
+html[data-theme="dark"] .top-nav-search input,
+html[data-theme="dark"] .top-nav-search .form-control { background-color: var(--dm-raised) !important; color: var(--dm-heading) !important; }
+html[data-theme="dark"] .select2-container--default .select2-selection--single,
+html[data-theme="dark"] .select2-dropdown,
+html[data-theme="dark"] .select2-search__field { background: var(--dm-raised) !important; border-color: var(--dm-border) !important; color: var(--dm-heading) !important; }
+html[data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .select2-results__option { color: var(--dm-text); }
+html[data-theme="dark"] .select2-container--default .select2-results__option--highlighted[aria-selected] { background: var(--dm-primary) !important; }
+html[data-theme="dark"] option { background: var(--dm-surface); color: var(--dm-heading); }
+
+/* ── Buttons, badges, menus, pop-ups ───────────────────────────────────── */
+html[data-theme="dark"] .btn-primary { background-color: var(--dm-primary) !important; border-color: var(--dm-primary) !important; color: #fff !important; }
+html[data-theme="dark"] .btn-outline-primary { color: var(--dm-link) !important; border-color: var(--dm-link) !important; background: transparent !important; }
+html[data-theme="dark"] .btn-outline-primary:hover { background: var(--dm-primary) !important; color: #fff !important; }
+html[data-theme="dark"] .btn-outline-secondary { color: var(--dm-text) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .doctor-refresh, html[data-theme="dark"] .add-pluss { background: var(--dm-raised) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .dropdown-menu { background: var(--dm-surface) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .dropdown-item { color: var(--dm-text) !important; }
+html[data-theme="dark"] .dropdown-item:hover, html[data-theme="dark"] .dropdown-item:focus { background: var(--dm-raised) !important; color: var(--dm-heading) !important; }
+html[data-theme="dark"] .modal-content { background: var(--dm-surface) !important; color: var(--dm-text); border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .modal-header, html[data-theme="dark"] .modal-footer { border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .btn-close { filter: invert(1); }
+html[data-theme="dark"] .swal2-popup { background: var(--dm-surface) !important; color: var(--dm-text) !important; }
+html[data-theme="dark"] .swal2-title { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .swal2-html-container { color: var(--dm-text) !important; }
+html[data-theme="dark"] .pagination a, html[data-theme="dark"] .pagination span,
+html[data-theme="dark"] .page-link { background: var(--dm-raised) !important; border-color: var(--dm-border) !important; color: var(--dm-text) !important; }
+html[data-theme="dark"] .pagination span, html[data-theme="dark"] .page-item.active .page-link { background: var(--dm-primary) !important; color: #fff !important; }
+html[data-theme="dark"] .dataTables_wrapper, html[data-theme="dark"] .dataTables_info { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .notification-box .msg-sidebar { background: var(--dm-surface) !important; }
+
+/* ── DocCare pages ─────────────────────────────────────────────────────── */
+html[data-theme="dark"] .patient-code { color: var(--dm-muted) !important; }
+/* status dropdown options (doccare-custom.css) keep their colours; just the closed box */
+html[data-theme="dark"] .status-dropdown { border-color: var(--dm-border) !important; }
+
+/* Appointments list, Doctor's Appointments */
+html[data-theme="dark"] .date-chip, html[data-theme="dark"] .fu-chip,
+html[data-theme="dark"] .notes-link { background: var(--dm-raised) !important; border-color: var(--dm-border) !important; color: var(--dm-link) !important; }
+html[data-theme="dark"] .date-chip.active, html[data-theme="dark"] .fu-chip.active { background: var(--dm-primary) !important; border-color: var(--dm-primary) !important; color: #fff !important; }
+html[data-theme="dark"] .showing-label, html[data-theme="dark"] .next7-link { color: var(--dm-muted) !important; }
+/* bookings outside working hours (Doctor's Appointments) keep an amber hint */
+html[data-theme="dark"] tr[style*="#fff7ed"], html[data-theme="dark"] tr[style*="#fff7ed"] > td { background: #2a2110 !important; }
+
+/* Appointment Report */
+html[data-theme="dark"] .range-link { background: var(--dm-raised) !important; border-color: var(--dm-border) !important; color: var(--dm-link) !important; }
+html[data-theme="dark"] .range-link:hover, html[data-theme="dark"] .range-link.active { background: var(--dm-primary) !important; border-color: var(--dm-primary) !important; color: #fff !important; }
+html[data-theme="dark"] .range-links span { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .report-toolbar { border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .toolbar-divider { background: var(--dm-border) !important; }
+html[data-theme="dark"] .chart-card { background: var(--dm-surface) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .chart-card h6, html[data-theme="dark"] .section-title { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .chart-card .chart-sub, html[data-theme="dark"] .chart-empty { color: var(--dm-muted) !important; }
+/* summary cards keep their meaning (blue total, green completed ...) as dark tints */
+html[data-theme="dark"] .summary-card { background: var(--dm-surface) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .summary-card .label, html[data-theme="dark"] .summary-card .sub { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .summary-card .value { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .summary-card.total { background: #191c33 !important; border-color: #2f3566 !important; }
+html[data-theme="dark"] .summary-card.total .value { color: var(--dm-link) !important; }
+html[data-theme="dark"] .summary-card.completed { background: #10251c !important; border-color: #1f4d3a !important; }
+html[data-theme="dark"] .summary-card.completed .value { color: #6ee7b7 !important; }
+html[data-theme="dark"] .summary-card.upcoming { background: #121e33 !important; border-color: #233b66 !important; }
+html[data-theme="dark"] .summary-card.upcoming .value { color: #93c5fd !important; }
+html[data-theme="dark"] .summary-card.cancelled { background: #2a1416 !important; border-color: #5c2228 !important; }
+html[data-theme="dark"] .summary-card.cancelled .value { color: #fca5a5 !important; }
+html[data-theme="dark"] .summary-card.money { background: #2a2110 !important; border-color: #5c4714 !important; }
+html[data-theme="dark"] .summary-card.money .value { color: #fcd34d !important; }
+html[data-theme="dark"] .summary-card.noshow { background: #1d2029 !important; border-color: #343949 !important; }
+html[data-theme="dark"] .summary-card.noshow .value { color: #d1d5db !important; }
+html[data-theme="dark"] .doctor-summary tr:last-child td { background: var(--dm-raised) !important; }
+/* status badges in report and lists */
+html[data-theme="dark"] .st-Pending { background: #2a2d38 !important; color: #d1d5db !important; }
+html[data-theme="dark"] .st-Confirmed { background: #172a4a !important; color: #93c5fd !important; }
+html[data-theme="dark"] .st-Completed { background: #12301f !important; color: #86efac !important; }
+html[data-theme="dark"] .st-Cancelled { background: #3a1517 !important; color: #fca5a5 !important; }
+html[data-theme="dark"] .st-NoShow { background: #262a35 !important; color: #cbd5e1 !important; }
+
+/* Working hours */
+html[data-theme="dark"] .hours-table tr.day-off td { background: #141620 !important; color: var(--dm-muted) !important; }
+html[data-theme="dark"] .page-note, html[data-theme="dark"] .slot-count { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .leave-warning { background: #2a1d10 !important; border-color: #6b4316 !important; color: #f8d3a8 !important; }
+html[data-theme="dark"] .leave-warning h5, html[data-theme="dark"] .leave-warning ul, html[data-theme="dark"] .leave-warning div { color: #f8d3a8 !important; }
+
+/* Walk-in booking */
+html[data-theme="dark"] .find-patient { background: #171b2b !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .find-patient label { color: var(--dm-link) !important; background: transparent !important; }
+html[data-theme="dark"] .find-match { background: var(--dm-raised) !important; border-color: var(--dm-border) !important; color: var(--dm-text) !important; }
+html[data-theme="dark"] .returning-patient { background: #10261d !important; border-color: #1f5c43 !important; color: #a7f3d0 !important; }
+
+/* Patient profile, Visit Notes, Follow-ups */
+html[data-theme="dark"] .mh-allergy, html[data-theme="dark"] .allergy-banner { background: #2b1416 !important; border-color: #6b2228 !important; color: #fecaca !important; }
+html[data-theme="dark"] .mh-allergy *, html[data-theme="dark"] .allergy-banner * { color: #fecaca !important; }
+html[data-theme="dark"] .mh-visit { background: var(--dm-surface) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .mh-visit summary:hover { background: var(--dm-raised) !important; }
+html[data-theme="dark"] .mh-date, html[data-theme="dark"] .mh-doc, html[data-theme="dark"] .mh-fee,
+html[data-theme="dark"] .mh-facts strong, html[data-theme="dark"] .visit-head h3 { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .mh-date small, html[data-theme="dark"] .mh-doc small, html[data-theme="dark"] .mh-diag,
+html[data-theme="dark"] .mh-facts span, html[data-theme="dark"] .mh-updated, html[data-theme="dark"] .mh-next,
+html[data-theme="dark"] .section-note, html[data-theme="dark"] .recorded, html[data-theme="dark"] .visit-head .sub,
+html[data-theme="dark"] .fu-note, html[data-theme="dark"] .fu-count, html[data-theme="dark"] .fu-small,
+html[data-theme="dark"] .mh-label, html[data-theme="dark"] .field label { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .mh-body { border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .mh-body p, html[data-theme="dark"] .mh-body li { color: var(--dm-text) !important; }
+html[data-theme="dark"] .mh-body h6, html[data-theme="dark"] .visit-head .when { color: var(--dm-link) !important; }
+html[data-theme="dark"] .readonly-note { background: var(--dm-raised) !important; border-color: var(--dm-border) !important; color: var(--dm-text) !important; }
+html[data-theme="dark"] .visit-status, html[data-theme="dark"] .mh-status { background: var(--dm-raised) !important; color: var(--dm-link) !important; }
+html[data-theme="dark"] .mh-status.st-Completed { background: #12301f !important; color: #86efac !important; }
+html[data-theme="dark"] .mh-status.st-Pending { background: #33270e !important; color: #fcd34d !important; }
+html[data-theme="dark"] .fu-table th { color: var(--dm-muted) !important; border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .fu-table td { border-color: var(--dm-border) !important; }
+html[data-theme="dark"] .fu-due { color: var(--dm-heading) !important; }
+html[data-theme="dark"] .fu-badge.soon { background: var(--dm-raised) !important; color: var(--dm-link) !important; }
+html[data-theme="dark"] .fu-badge.overdue { background: #33270e !important; color: #fcd34d !important; }
+html[data-theme="dark"] .fu-badge.today { background: #12301f !important; color: #86efac !important; }
+html[data-theme="dark"] .fu-done, html[data-theme="dark"] .rx-remove { color: #fca5a5 !important; }
+html[data-theme="dark"] .rx-table th { color: var(--dm-muted) !important; }
+html[data-theme="dark"] .rx-add, html[data-theme="dark"] .mh-link { color: var(--dm-link) !important; }

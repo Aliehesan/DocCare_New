@@ -73,6 +73,8 @@
     <Content Include="assets\css\select2.min.css" />
     <Content Include="assets\css\style.css" />
     <Content Include="assets\css\doccare-custom.css" />
+    <Content Include="assets\css\doccare-dark.css" />
+    <Content Include="assets\js\doccare-theme.js" />
     <Content Include="assets\css\tagsinput.css" />
     <Content Include="assets\fonts\Feather144f.svg" />
     <Content Include="assets\img\activity-01.jpg" />

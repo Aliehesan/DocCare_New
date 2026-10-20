@@ -31,7 +31,9 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'bottom'
+                            position: 'bottom',
+                            // legend text follows light / dark mode (assets/js/doccare-theme.js)
+                            labels: { color: window.DocCareTheme ? DocCareTheme.ink() : '#666' }
                         }
                     },
                     animation: {
@@ -51,7 +53,8 @@
         function drawLast14Days(labels, values) {
             var canvas = document.getElementById('chart14days');
             if (!canvas || typeof Chart === 'undefined') return;
-            var ink = '#52514e';
+            // colours follow light / dark mode (assets/js/doccare-theme.js)
+            var ink = window.DocCareTheme ? DocCareTheme.ink() : '#52514e';
             new Chart(canvas, {
                 type: 'bar',
                 data: { labels: labels, datasets: [{ data: values, backgroundColor: '#2a78d6', borderRadius: 4, maxBarThickness: 28 }] },
@@ -61,13 +64,13 @@
                                tooltip: { callbacks: { label: function (c) { return ' ' + c.parsed.y + (c.parsed.y === 1 ? ' appointment' : ' appointments'); } } } },
                     scales: {
                         x: { ticks: { color: ink, maxRotation: 0, autoSkip: true }, grid: { display: false, drawBorder: false } },
-                        y: { beginAtZero: true, grace: '12%', ticks: { precision: 0, color: ink }, grid: { color: '#e8e7e3', drawBorder: false } }
+                        y: { beginAtZero: true, grace: '12%', ticks: { precision: 0, color: ink }, grid: { color: window.DocCareTheme ? DocCareTheme.grid() : '#e8e7e3', drawBorder: false } }
                     }
                 },
                 plugins: [{
                     id: 'values',
                     afterDatasetsDraw: function (chart) {
-                        var ctx = chart.ctx; ctx.save(); ctx.fillStyle = ink; ctx.font = '600 12px Poppins, sans-serif';
+                        var ctx = chart.ctx; ctx.save(); ctx.fillStyle = window.DocCareTheme ? DocCareTheme.ink() : ink; ctx.font = '600 12px Poppins, sans-serif';
                         ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
                         chart.getDatasetMeta(0).data.forEach(function (bar, i) { var v = values[i]; if (v) ctx.fillText(v, bar.x, bar.y - 4); });
                         ctx.restore();
@@ -98,7 +101,9 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'bottom'
+                            position: 'bottom',
+                            // legend text follows light / dark mode (assets/js/doccare-theme.js)
+                            labels: { color: window.DocCareTheme ? DocCareTheme.ink() : '#666' }
                         }
                     }
                 }
